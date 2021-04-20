@@ -190,7 +190,7 @@ PatternAndNameList patterns = {
   { colorWaves,             "Color Waves" },
   { colorWavesFibonacci,    "Color Waves Fibonacci" },
 
-   { pridePlayground,         "Pride Playground" },
+  { pridePlayground,         "Pride Playground" },
   { pridePlaygroundFibonacci, "Pride Playground Fibonacci" },
 
   { colorWavesPlayground,          "Color Waves Playground" },
@@ -219,18 +219,18 @@ PatternAndNameList patterns = {
   { yGradientPalette,  "Y Axis Gradient Palette" },
   { xyGradientPalette, "XY Axis Gradient Palette" },
 
-   // noise patterns
-   { fireNoise, "Fire Noise" },
-   { fireNoise2, "Fire Noise 2" },
-   { lavaNoise, "Lava Noise" },
-   { rainbowNoise, "Rainbow Noise" },
-   { rainbowStripeNoise, "Rainbow Stripe Noise" },
-   { partyNoise, "Party Noise" },
-   { forestNoise, "Forest Noise" },
-   { cloudNoise, "Cloud Noise" },
-   { oceanNoise, "Ocean Noise" },
-   { blackAndWhiteNoise, "Black & White Noise" },
-   { blackAndBlueNoise, "Black & Blue Noise" },
+  // noise patterns
+  { fireNoise, "Fire Noise" },
+  { fireNoise2, "Fire Noise 2" },
+  { lavaNoise, "Lava Noise" },
+  { rainbowNoise, "Rainbow Noise" },
+  { rainbowStripeNoise, "Rainbow Stripe Noise" },
+  { partyNoise, "Party Noise" },
+  { forestNoise, "Forest Noise" },
+  { cloudNoise, "Cloud Noise" },
+  { oceanNoise, "Ocean Noise" },
+  { blackAndWhiteNoise, "Black & White Noise" },
+  { blackAndBlueNoise, "Black & Blue Noise" },
 
   { drawAnalogClock, "Analog Clock" },
 
@@ -311,7 +311,7 @@ void setup() {
 
   //  irReceiver.enableIRIn(); // Start the receiver
 
-  Serial.println();
+  Serial.println(F("System Info:"));
   Serial.print( F("Heap: ") ); Serial.println(system_get_free_heap_size());
   Serial.print( F("Boot Vers: ") ); Serial.println(system_get_boot_version());
   Serial.print( F("CPU: ") ); Serial.println(system_get_cpu_freq());
@@ -321,6 +321,20 @@ void setup() {
   Serial.print( F("Flash Size: ") ); Serial.println(ESP.getFlashChipRealSize());
   Serial.print( F("Vcc: ") ); Serial.println(ESP.getVcc());
   Serial.print( F("MAC Address: ") ); Serial.println(WiFi.macAddress());
+  Serial.println();
+
+  Serial.println(F("Settings: "));
+  Serial.print(F("brightness: ")); Serial.println(brightness);
+  Serial.print(F("currentPatternIndex: ")); Serial.println(currentPatternIndex);
+  Serial.print(F("solidColor.r: ")); Serial.println(solidColor.r);
+  Serial.print(F("solidColor.g: ")); Serial.println(solidColor.g);
+  Serial.print(F("solidColor.b: ")); Serial.println(solidColor.b);
+  Serial.print(F("power: ")); Serial.println(power);
+  Serial.print(F("autoplay: ")); Serial.println(autoplay);
+  Serial.print(F("autoplayDuration: ")); Serial.println(autoplayDuration);
+  Serial.print(F("currentPaletteIndex: ")); Serial.println(currentPaletteIndex);
+  Serial.print(F("showClock: ")); Serial.println(showClock);
+  Serial.print(F("clockBackgroundFade: ")); Serial.println(clockBackgroundFade);
   Serial.println();
 
   SPIFFS.begin();
