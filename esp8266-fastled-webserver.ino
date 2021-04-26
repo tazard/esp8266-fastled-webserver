@@ -78,7 +78,7 @@ CRGB leds[NUM_LEDS];
 
 const uint8_t brightnessCount = 5;
 uint8_t brightnessMap[brightnessCount] = { 16, 32, 64, 128, 255 };
-uint8_t brightnessIndex = 0;
+uint8_t brightnessIndex = 3;
 
 // ten seconds per color palette makes a good demo
 // 20-120 is better for deployment
@@ -110,7 +110,7 @@ CRGBPalette16 gTargetPalette( gGradientPalettes[0] );
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
-uint8_t currentPatternIndex = 0; // Index number of which pattern is current
+uint8_t currentPatternIndex = 3; // Index number of which pattern is current
 uint8_t autoplay = 0;
 
 uint8_t autoplayDuration = 10;
@@ -297,7 +297,7 @@ void setup() {
   FastLED.show();
 
   EEPROM.begin(512);
-  loadSettings();
+  readSettings();
 
   FastLED.setBrightness(brightness);
 
@@ -312,6 +312,7 @@ void setup() {
   Serial.print( F("Flash ID: ") ); Serial.println(spi_flash_get_id());
   Serial.print( F("Flash Size: ") ); Serial.println(ESP.getFlashChipRealSize());
   Serial.print( F("Vcc: ") ); Serial.println(ESP.getVcc());
+  Serial.print( F("MAC Address: ") ); Serial.println(WiFi.macAddress());
   Serial.println();
 
   SPIFFS.begin();
@@ -329,13 +330,20 @@ void setup() {
 
   // Do a little work to get a unique-ish name. Get the
   // last two bytes of the MAC (HEX'd)":
+
+  // copy the mac address to a byte array
   uint8_t mac[WL_MAC_ADDR_LENGTH];
   WiFi.softAPmacAddress(mac);
-  String macID = String(mac[WL_MAC_ADDR_LENGTH - 2], HEX) +
-                 String(mac[WL_MAC_ADDR_LENGTH - 1], HEX);
-  macID.toUpperCase();
 
-  nameString = "Fibonacci128 " + macID;
+  // format the last two digits to hex character array, like 0A0B
+  char macID[5];
+  sprintf(macID, "%02X%02X", mac[WL_MAC_ADDR_LENGTH - 2], mac[WL_MAC_ADDR_LENGTH - 1]);
+
+  // convert the character array to a string
+  String macIdString = macID;
+  macIdString.toUpperCase();
+
+  nameString = "Fibonacci128-" + macIdString;
 
   char nameChar[nameString.length() + 1];
   memset(nameChar, 0, nameString.length() + 1);
@@ -392,6 +400,7 @@ void setup() {
   webServer.on("/cooling", HTTP_POST, []() {
     String value = webServer.arg("value");
     cooling = value.toInt();
+    writeAndCommitSettings();
     broadcastInt("cooling", cooling);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(cooling);
@@ -400,6 +409,7 @@ void setup() {
   webServer.on("/sparking", HTTP_POST, []() {
     String value = webServer.arg("value");
     sparking = value.toInt();
+    writeAndCommitSettings();
     broadcastInt("sparking", sparking);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(sparking);
@@ -418,6 +428,7 @@ void setup() {
     twinkleSpeed = value.toInt();
     if (twinkleSpeed < 0) twinkleSpeed = 0;
     else if (twinkleSpeed > 8) twinkleSpeed = 8;
+    writeAndCommitSettings();
     broadcastInt("twinkleSpeed", twinkleSpeed);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(twinkleSpeed);
@@ -428,9 +439,20 @@ void setup() {
     twinkleDensity = value.toInt();
     if (twinkleDensity < 0) twinkleDensity = 0;
     else if (twinkleDensity > 8) twinkleDensity = 8;
+    writeAndCommitSettings();
     broadcastInt("twinkleDensity", twinkleDensity);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     sendInt(twinkleDensity);
+  });
+
+  webServer.on("/coolLikeIncandescent", HTTP_POST, []() {
+    String value = webServer.arg("value");
+    coolLikeIncandescent = value.toInt();
+    if (coolLikeIncandescent < 0) coolLikeIncandescent = 0;
+    else if (coolLikeIncandescent > 1) coolLikeIncandescent = 1;
+    writeAndCommitSettings();
+    broadcastInt("coolLikeIncandescent", coolLikeIncandescent);
+    sendInt(coolLikeIncandescent);
   });
 
   webServer.on("/solidColor", HTTP_POST, []() {
@@ -878,8 +900,15 @@ void loop() {
 //  }
 //}
 
-void loadSettings()
+void readSettings()
 {
+  // check for "magic number" so we know settings have been written to EEPROM
+  // and it's not just full of random bytes
+
+  if (EEPROM.read(511) != 55) {
+    return;
+  }
+
   brightness = EEPROM.read(0);
 
   currentPatternIndex = EEPROM.read(1);
@@ -911,37 +940,59 @@ void loadSettings()
   else if (currentPaletteIndex >= paletteCount)
     currentPaletteIndex = paletteCount - 1;
 
-  showClock = EEPROM.read(9);
-  clockBackgroundFade = EEPROM.read(10);
+  twinkleSpeed = EEPROM.read(9);
+  twinkleDensity = EEPROM.read(10);
+
+  cooling = EEPROM.read(11);
+  sparking = EEPROM.read(12);
+
+  coolLikeIncandescent = EEPROM.read(13);
+
+  showClock = EEPROM.read(14);
+  clockBackgroundFade = EEPROM.read(15);
+}
+
+void writeAndCommitSettings()
+{
+  EEPROM.write(0, brightness);
+  EEPROM.write(1, currentPatternIndex);
+  EEPROM.write(2, solidColor.r);
+  EEPROM.write(3, solidColor.g);
+  EEPROM.write(4, solidColor.b);
+  EEPROM.write(5, power);
+  EEPROM.write(6, autoplay);
+  EEPROM.write(7, autoplayDuration);
+  EEPROM.write(8, currentPaletteIndex);
+  EEPROM.write(9, twinkleSpeed);
+  EEPROM.write(10, twinkleDensity);
+  EEPROM.write(11, cooling);
+  EEPROM.write(12, sparking);
+  EEPROM.write(13, coolLikeIncandescent);
+  EEPROM.write(14, showClock);
+  EEPROM.write(15, clockBackgroundFade);
+
+  EEPROM.write(511, 55);
+  EEPROM.commit();
 }
 
 void setPower(uint8_t value)
 {
   power = value == 0 ? 0 : 1;
-
-  EEPROM.write(5, power);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   broadcastInt("power", power);
 }
 
 void setAutoplay(uint8_t value)
 {
   autoplay = value == 0 ? 0 : 1;
-
-  EEPROM.write(6, autoplay);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   broadcastInt("autoplay", autoplay);
 }
 
 void setAutoplayDuration(uint8_t value)
 {
   autoplayDuration = value;
-
-  EEPROM.write(7, autoplayDuration);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   autoPlayTimeout = millis() + (autoplayDuration * 1000);
 
   broadcastInt("autoplayDuration", autoplayDuration);
@@ -955,12 +1006,7 @@ void setSolidColor(CRGB color)
 void setSolidColor(uint8_t r, uint8_t g, uint8_t b)
 {
   solidColor = CRGB(r, g, b);
-
-  EEPROM.write(2, r);
-  EEPROM.write(3, g);
-  EEPROM.write(4, b);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   setPattern(patternCount - 1);
 
   broadcastString("color", String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b));
@@ -981,8 +1027,7 @@ void adjustPattern(bool up)
     currentPatternIndex = 0;
 
   if (autoplay == 0) {
-    EEPROM.write(1, currentPatternIndex);
-    EEPROM.commit();
+    writeAndCommitSettings();
   }
 
   broadcastInt("pattern", currentPatternIndex);
@@ -996,8 +1041,7 @@ void setPattern(uint8_t value)
   currentPatternIndex = value;
 
   if (autoplay == 0) {
-    EEPROM.write(1, currentPatternIndex);
-    EEPROM.commit();
+    writeAndCommitSettings();
   }
 
   broadcastInt("pattern", currentPatternIndex);
@@ -1019,10 +1063,7 @@ void setPalette(uint8_t value)
     value = paletteCount - 1;
 
   currentPaletteIndex = value;
-
-  EEPROM.write(8, currentPaletteIndex);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   broadcastInt("palette", currentPaletteIndex);
 }
 
@@ -1046,10 +1087,7 @@ void adjustBrightness(bool up)
   brightness = brightnessMap[brightnessIndex];
 
   FastLED.setBrightness(brightness);
-
-  EEPROM.write(0, brightness);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   broadcastInt("brightness", brightness);
 }
 
@@ -1062,10 +1100,7 @@ void setBrightness(uint8_t value)
   brightness = value;
 
   FastLED.setBrightness(brightness);
-
-  EEPROM.write(0, brightness);
-  EEPROM.commit();
-
+  writeAndCommitSettings();
   broadcastInt("brightness", brightness);
 }
 
