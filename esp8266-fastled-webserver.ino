@@ -63,7 +63,6 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
 #include "FSBrowser.h"
 
-#define DATA_PIN D5
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
 #define NUM_LEDS 512
@@ -111,7 +110,7 @@ CRGBPalette16 gTargetPalette( gGradientPalettes[0] );
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
-uint8_t currentPatternIndex = 0; // Index number of which pattern is current
+uint8_t currentPatternIndex = 3; // Index number of which pattern is current
 uint8_t autoplay = 0;
 
 uint8_t autoplayDuration = 10;
@@ -290,10 +289,13 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
 
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); // for WS2812 (Neopixel)
-  //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS); // for APA102 (Dotstar)
+  FastLED.addLeds<LED_TYPE, D7, COLOR_ORDER>(leds, 0, 121).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, D6, COLOR_ORDER>(leds, 121, 120).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, D8, COLOR_ORDER>(leds, 241, 121).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<LED_TYPE, D5, COLOR_ORDER>(leds, 362, 150).setCorrection(TypicalLEDStrip);
+
   FastLED.setDither(false);
-  //  FastLED.setCorrection(TypicalSMD5050);
+  FastLED.setCorrection(TypicalSMD5050);
   FastLED.setBrightness(brightness);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
   fill_solid(leds, NUM_LEDS, CRGB::Black);
@@ -970,6 +972,9 @@ void writeAndCommitSettings()
   EEPROM.write(10, twinkleDensity);
   EEPROM.write(11, cooling);
   EEPROM.write(12, sparking);
+  EEPROM.write(13, coolLikeIncandescent);
+  EEPROM.write(14, showClock);
+  EEPROM.write(15, clockBackgroundFade);
 
   EEPROM.write(511, 55);
   EEPROM.commit();
