@@ -39,6 +39,7 @@ extern "C" {
 #include <EEPROM.h>
 //#include <IRremoteESP8266.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager/tree/development
+#include "Info.h"
 #include "GradientPalettes.h"
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
@@ -288,6 +289,8 @@ const uint8_t patternCount = ARRAY_SIZE(patterns);
 
 #include "Fields.h"
 
+ADC_MODE(ADC_VCC);
+
 void setup() {
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP    
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
@@ -392,6 +395,12 @@ void setup() {
 
   webServer.on("/all", HTTP_GET, []() {
     String json = getFieldsJson(fields, fieldCount);
+    webServer.sendHeader("Access-Control-Allow-Origin", "*");
+    webServer.send(200, "application/json", json);
+  });
+
+  webServer.on("/info", HTTP_GET, []() {
+    String json = getInfoJson();
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
     webServer.send(200, "application/json", json);
   });
