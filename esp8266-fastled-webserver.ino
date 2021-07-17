@@ -70,7 +70,9 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 #define NUM_LEDS 256
 #define NUM_LEDS_3 NUM_LEDS * 3
 
-#define MILLI_AMPS 2000       // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
+#define MAX_MILLI_AMPS_PER_LED 12
+#define MAX_MILLI_AMPS MAX_MILLI_AMPS_PER_LED * NUM_LEDS
+#define MILLI_AMPS 1600       // IMPORTANT: set the max milli-Amps of your power supply (2A = 2000mA)
 #define FRAMES_PER_SECOND 120 // here you can control the speed. With the Access Point / Web Server the animations run a bit slower.
 
 String nameString;
@@ -298,12 +300,14 @@ void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
 
+  uint16_t milliAmps = MILLI_AMPS < MAX_MILLI_AMPS ? MILLI_AMPS : MAX_MILLI_AMPS;
+
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); // for WS2812 (Neopixel)
   //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS); // for APA102 (Dotstar)
   FastLED.setDither(false);
   //  FastLED.setCorrection(TypicalSMD5050);
   FastLED.setBrightness(brightness);
-  FastLED.setMaxPowerInVoltsAndMilliamps(5, MILLI_AMPS);
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, milliAmps);
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
@@ -315,6 +319,7 @@ void setup() {
   //  irReceiver.enableIRIn(); // Start the receiver
 
   Serial.println(F("System Info:"));
+  Serial.print( F("Max mA: ") ); Serial.println(milliAmps);
   Serial.print( F("Heap: ") ); Serial.println(system_get_free_heap_size());
   Serial.print( F("Boot Vers: ") ); Serial.println(system_get_boot_version());
   Serial.print( F("CPU: ") ); Serial.println(system_get_cpu_freq());
