@@ -23,7 +23,8 @@
 #include <FastLED.h>
 FASTLED_USING_NAMESPACE
 
-extern "C" {
+extern "C"
+{
 #include "user_interface.h"
 }
 
@@ -63,13 +64,13 @@ NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
 #include "FSBrowser.h"
 
-#define DATA_PIN      D5
-#define LED_TYPE      WS2812B
-#define COLOR_ORDER   GRB
-#define NUM_LEDS      64
+#define DATA_PIN D5
+#define LED_TYPE WS2812B
+#define COLOR_ORDER GRB
+#define NUM_LEDS 64
 
-#define MILLI_AMPS         1400 // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
-#define FRAMES_PER_SECOND  120  // here you can control the speed. With the Access Point / Web Server the animations run a bit slower.
+#define MILLI_AMPS 1400       // IMPORTANT: set the max milli-Amps of your power supply (4A = 4000mA)
+#define FRAMES_PER_SECOND 120 // here you can control the speed. With the Access Point / Web Server the animations run a bit slower.
 
 String nameString;
 
@@ -78,8 +79,8 @@ String nameString;
 CRGB leds[NUM_LEDS];
 
 const uint8_t brightnessCount = 5;
-uint8_t brightnessMap[brightnessCount] = { 16, 32, 64, 128, 255 };
-uint8_t brightnessIndex = 2;
+uint8_t brightnessMap[brightnessCount] = {16, 32, 64, 128, 255};
+uint8_t brightnessIndex = 3;
 
 // ten seconds per color palette makes a good demo
 // 20-120 is better for deployment
@@ -106,8 +107,8 @@ extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
 
 uint8_t gCurrentPaletteNumber = 0;
 
-CRGBPalette16 gCurrentPalette( CRGB::Black);
-CRGBPalette16 gTargetPalette( gGradientPalettes[0] );
+CRGBPalette16 gCurrentPalette(CRGB::Black);
+CRGBPalette16 gTargetPalette(gGradientPalettes[0]);
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
@@ -129,44 +130,46 @@ CRGB solidColor = CRGB::Blue;
 // scale the brightness of all pixels down
 void dimAll(byte value)
 {
-  for (int i = 0; i < NUM_LEDS; i++) {
+  for (int i = 0; i < NUM_LEDS; i++)
+  {
     leds[i].nscale8(value);
   }
 }
 
-typedef struct {
+typedef struct
+{
   CRGBPalette16 palette;
   String name;
 } PaletteAndName;
 typedef PaletteAndName PaletteAndNameList[];
 
 const CRGBPalette16 palettes[] = {
-  RainbowColors_p,
-  RainbowStripeColors_p,
-  CloudColors_p,
-  LavaColors_p,
-  OceanColors_p,
-  ForestColors_p,
-  PartyColors_p,
-  HeatColors_p
-};
+    RainbowColors_p,
+    RainbowStripeColors_p,
+    CloudColors_p,
+    LavaColors_p,
+    OceanColors_p,
+    ForestColors_p,
+    PartyColors_p,
+    HeatColors_p};
 
 const uint8_t paletteCount = ARRAY_SIZE(palettes);
 
 const String paletteNames[paletteCount] = {
-  "Rainbow",
-  "Rainbow Stripe",
-  "Cloud",
-  "Lava",
-  "Ocean",
-  "Forest",
-  "Party",
-  "Heat",
+    "Rainbow",
+    "Rainbow Stripe",
+    "Cloud",
+    "Lava",
+    "Ocean",
+    "Forest",
+    "Party",
+    "Heat",
 };
 
 typedef void (*Pattern)();
 typedef Pattern PatternList[];
-typedef struct {
+typedef struct
+{
   Pattern pattern;
   String name;
 } PatternAndName;
@@ -182,94 +185,94 @@ typedef PatternAndName PatternAndNameList[];
 // List of patterns to cycle through.  Each is defined as a separate function below.
 
 PatternAndNameList patterns = {
-  { pride,                  "Pride" },
-  { prideFibonacci,         "Pride Fibonacci" },
-  { colorWaves,             "Color Waves" },
-  { colorWavesFibonacci,    "Color Waves Fibonacci" },
+    {pride, "Pride"},
+    {prideFibonacci, "Pride Fibonacci"},
+    {colorWaves, "Color Waves"},
+    {colorWavesFibonacci, "Color Waves Fibonacci"},
 
-  { pridePlayground,         "Pride Playground" },
-  { pridePlaygroundFibonacci, "Pride Playground Fibonacci" },
+    {pridePlayground, "Pride Playground"},
+    {pridePlaygroundFibonacci, "Pride Playground Fibonacci"},
 
-  { colorWavesPlayground,          "Color Waves Playground" },
-  { colorWavesPlaygroundFibonacci, "Color Waves Playground Fibonacci" },
+    {colorWavesPlayground, "Color Waves Playground"},
+    {colorWavesPlaygroundFibonacci, "Color Waves Playground Fibonacci"},
 
-  // matrix patterns
-  { anglePalette,  "Angle Palette" },
-  { radiusPalette,  "Radius Palette" },
-  { xPalette,  "X Axis Palette" },
-  { yPalette,  "Y Axis Palette" },
-  { xyPalette, "XY Axis Palette" },
-  
-  { angleGradientPalette,  "Angle Gradient Palette" },
-  { radiusGradientPalette,  "Radius Gradient Palette" },
-  { xGradientPalette,  "X Axis Gradient Palette" },
-  { yGradientPalette,  "Y Axis Gradient Palette" },
-  { xyGradientPalette, "XY Axis Gradient Palette" },
+    // matrix patterns
+    {anglePalette, "Angle Palette"},
+    {radiusPalette, "Radius Palette"},
+    {xPalette, "X Axis Palette"},
+    {yPalette, "Y Axis Palette"},
+    {xyPalette, "XY Axis Palette"},
 
-  // noise patterns
-  { fireNoise, "Fire Noise" },
-  { fireNoise2, "Fire Noise 2" },
-  { lavaNoise, "Lava Noise" },
-  { rainbowNoise, "Rainbow Noise" },
-  { rainbowStripeNoise, "Rainbow Stripe Noise" },
-  { partyNoise, "Party Noise" },
-  { forestNoise, "Forest Noise" },
-  { cloudNoise, "Cloud Noise" },
-  { oceanNoise, "Ocean Noise" },
-  { blackAndWhiteNoise, "Black & White Noise" },
-  { blackAndBlueNoise, "Black & Blue Noise" },
+    {angleGradientPalette, "Angle Gradient Palette"},
+    {radiusGradientPalette, "Radius Gradient Palette"},
+    {xGradientPalette, "X Axis Gradient Palette"},
+    {yGradientPalette, "Y Axis Gradient Palette"},
+    {xyGradientPalette, "XY Axis Gradient Palette"},
 
-  { drawAnalogClock, "Analog Clock" },
+    // noise patterns
+    {fireNoise, "Fire Noise"},
+    {fireNoise2, "Fire Noise 2"},
+    {lavaNoise, "Lava Noise"},
+    {rainbowNoise, "Rainbow Noise"},
+    {rainbowStripeNoise, "Rainbow Stripe Noise"},
+    {partyNoise, "Party Noise"},
+    {forestNoise, "Forest Noise"},
+    {cloudNoise, "Cloud Noise"},
+    {oceanNoise, "Ocean Noise"},
+    {blackAndWhiteNoise, "Black & White Noise"},
+    {blackAndBlueNoise, "Black & Blue Noise"},
 
-  // twinkle patterns
-  { rainbowTwinkles,        "Rainbow Twinkles" },
-  { snowTwinkles,           "Snow Twinkles" },
-  { cloudTwinkles,          "Cloud Twinkles" },
-  { incandescentTwinkles,   "Incandescent Twinkles" },
+    {drawAnalogClock, "Analog Clock"},
 
-  // TwinkleFOX patterns
-  { retroC9Twinkles,        "Retro C9 Twinkles" },
-  { redWhiteTwinkles,       "Red & White Twinkles" },
-  { blueWhiteTwinkles,      "Blue & White Twinkles" },
-  { redGreenWhiteTwinkles,  "Red, Green & White Twinkles" },
-  { fairyLightTwinkles,     "Fairy Light Twinkles" },
-  { snow2Twinkles,          "Snow 2 Twinkles" },
-  { hollyTwinkles,          "Holly Twinkles" },
-  { iceTwinkles,            "Ice Twinkles" },
-  { partyTwinkles,          "Party Twinkles" },
-  { forestTwinkles,         "Forest Twinkles" },
-  { lavaTwinkles,           "Lava Twinkles" },
-  { fireTwinkles,           "Fire Twinkles" },
-  { cloud2Twinkles,         "Cloud 2 Twinkles" },
-  { oceanTwinkles,          "Ocean Twinkles" },
+    // twinkle patterns
+    {rainbowTwinkles, "Rainbow Twinkles"},
+    {snowTwinkles, "Snow Twinkles"},
+    {cloudTwinkles, "Cloud Twinkles"},
+    {incandescentTwinkles, "Incandescent Twinkles"},
 
-  { rainbow,                "Rainbow" },
-  { rainbowWithGlitter,     "Rainbow With Glitter" },
-  { rainbowSolid,           "Solid Rainbow" },
-  { confetti,               "Confetti" },
-  { sinelon,                "Sinelon" },
-  { bpm,                    "Beat" },
-  { juggle,                 "Juggle" },
-  { fire,                   "Fire" },
-  { water,                  "Water" },
+    // TwinkleFOX patterns
+    {retroC9Twinkles, "Retro C9 Twinkles"},
+    {redWhiteTwinkles, "Red & White Twinkles"},
+    {blueWhiteTwinkles, "Blue & White Twinkles"},
+    {redGreenWhiteTwinkles, "Red, Green & White Twinkles"},
+    {fairyLightTwinkles, "Fairy Light Twinkles"},
+    {snow2Twinkles, "Snow 2 Twinkles"},
+    {hollyTwinkles, "Holly Twinkles"},
+    {iceTwinkles, "Ice Twinkles"},
+    {partyTwinkles, "Party Twinkles"},
+    {forestTwinkles, "Forest Twinkles"},
+    {lavaTwinkles, "Lava Twinkles"},
+    {fireTwinkles, "Fire Twinkles"},
+    {cloud2Twinkles, "Cloud 2 Twinkles"},
+    {oceanTwinkles, "Ocean Twinkles"},
 
-  { strandTest,             "Strand Test" },
+    {rainbow, "Rainbow"},
+    {rainbowWithGlitter, "Rainbow With Glitter"},
+    {rainbowSolid, "Solid Rainbow"},
+    {confetti, "Confetti"},
+    {sinelon, "Sinelon"},
+    {bpm, "Beat"},
+    {juggle, "Juggle"},
+    {fire, "Fire"},
+    {water, "Water"},
 
-  { showSolidColor,         "Solid Color" }
-};
+    {strandTest, "Strand Test"},
+
+    {showSolidColor, "Solid Color"}};
 
 const uint8_t patternCount = ARRAY_SIZE(patterns);
 
 #include "Fields.h"
 
-void setup() {
-  WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP    
+void setup()
+{
+  WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
   WiFi.setSleepMode(WIFI_NONE_SLEEP);
 
   Serial.begin(115200);
   Serial.setDebugOutput(true);
 
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);         // for WS2812 (Neopixel)
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); // for WS2812 (Neopixel)
   //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS); // for APA102 (Dotstar)
   FastLED.setDither(false);
   FastLED.setCorrection(TypicalSMD5050);
@@ -286,15 +289,24 @@ void setup() {
   //  irReceiver.enableIRIn(); // Start the receiver
 
   Serial.println();
-  Serial.print( F("Heap: ") ); Serial.println(system_get_free_heap_size());
-  Serial.print( F("Boot Vers: ") ); Serial.println(system_get_boot_version());
-  Serial.print( F("CPU: ") ); Serial.println(system_get_cpu_freq());
-  Serial.print( F("SDK: ") ); Serial.println(system_get_sdk_version());
-  Serial.print( F("Chip ID: ") ); Serial.println(system_get_chip_id());
-  Serial.print( F("Flash ID: ") ); Serial.println(spi_flash_get_id());
-  Serial.print( F("Flash Size: ") ); Serial.println(ESP.getFlashChipRealSize());
-  Serial.print( F("Vcc: ") ); Serial.println(ESP.getVcc());
-  Serial.print( F("MAC Address: ") ); Serial.println(WiFi.macAddress());
+  Serial.print(F("Heap: "));
+  Serial.println(system_get_free_heap_size());
+  Serial.print(F("Boot Vers: "));
+  Serial.println(system_get_boot_version());
+  Serial.print(F("CPU: "));
+  Serial.println(system_get_cpu_freq());
+  Serial.print(F("SDK: "));
+  Serial.println(system_get_sdk_version());
+  Serial.print(F("Chip ID: "));
+  Serial.println(system_get_chip_id());
+  Serial.print(F("Flash ID: "));
+  Serial.println(spi_flash_get_id());
+  Serial.print(F("Flash Size: "));
+  Serial.println(ESP.getFlashChipRealSize());
+  Serial.print(F("Vcc: "));
+  Serial.println(ESP.getVcc());
+  Serial.print(F("MAC Address: "));
+  Serial.println(WiFi.macAddress());
   Serial.println();
 
   SPIFFS.begin();
@@ -302,7 +314,8 @@ void setup() {
     Serial.println("SPIFFS contents:");
 
     Dir dir = SPIFFS.openDir("/");
-    while (dir.next()) {
+    while (dir.next())
+    {
       String fileName = dir.fileName();
       size_t fileSize = dir.fileSize();
       Serial.printf("FS File: %s, size: %s\n", fileName.c_str(), String(fileSize).c_str());
@@ -333,7 +346,7 @@ void setup() {
   for (int i = 0; i < nameString.length(); i++)
     nameChar[i] = nameString.charAt(i);
 
-  Serial.printf("Name: %s\n", nameChar );
+  Serial.printf("Name: %s\n", nameChar);
 
   // reset settings - wipe credentials for testing
   // wifiManager.resetSettings();
@@ -342,187 +355,220 @@ void setup() {
 
   //automatically connect using saved credentials if they exist
   //If connection fails it starts an access point with the specified name
-  if(wifiManager.autoConnect(nameChar)){
+  if (wifiManager.autoConnect(nameChar))
+  {
     Serial.println("Wi-Fi connected");
   }
-  else {
+  else
+  {
     Serial.println("Wi-Fi manager portal running");
   }
-  
+
   httpUpdateServer.setup(&webServer);
 
-  webServer.on("/all", HTTP_GET, []() {
-    String json = getFieldsJson(fields, fieldCount);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    webServer.send(200, "application/json", json);
-  });
+  webServer.on("/all", HTTP_GET, []()
+               {
+                 String json = getFieldsJson(fields, fieldCount);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 webServer.send(200, "application/json", json);
+               });
 
-  webServer.on("/fieldValue", HTTP_GET, []() {
-    String name = webServer.arg("name");
-    String value = getFieldValue(name, fields, fieldCount);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    webServer.send(200, "text/json", value);
-  });
+  webServer.on("/fieldValue", HTTP_GET, []()
+               {
+                 String name = webServer.arg("name");
+                 String value = getFieldValue(name, fields, fieldCount);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 webServer.send(200, "text/json", value);
+               });
 
-  webServer.on("/fieldValue", HTTP_POST, []() {
-    String name = webServer.arg("name");
-    String value = webServer.arg("value");
-    String newValue = setFieldValue(name, value, fields, fieldCount);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    webServer.send(200, "text/json", newValue);
-  });
+  webServer.on("/fieldValue", HTTP_POST, []()
+               {
+                 String name = webServer.arg("name");
+                 String value = webServer.arg("value");
+                 String newValue = setFieldValue(name, value, fields, fieldCount);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 webServer.send(200, "text/json", newValue);
+               });
 
-  webServer.on("/power", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setPower(value.toInt());
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(power);
-  });
+  webServer.on("/power", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setPower(value.toInt());
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(power);
+               });
 
-  webServer.on("/cooling", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    cooling = value.toInt();
-    writeAndCommitSettings();
-    broadcastInt("cooling", cooling);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(cooling);
-  });
+  webServer.on("/cooling", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 cooling = value.toInt();
+                 writeAndCommitSettings();
+                 broadcastInt("cooling", cooling);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(cooling);
+               });
 
-  webServer.on("/sparking", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    sparking = value.toInt();
-    writeAndCommitSettings();
-    broadcastInt("sparking", sparking);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(sparking);
-  });
+  webServer.on("/sparking", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 sparking = value.toInt();
+                 writeAndCommitSettings();
+                 broadcastInt("sparking", sparking);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(sparking);
+               });
 
-  webServer.on("/speed", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    speed = value.toInt();
-    broadcastInt("speed", speed);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(speed);
-  });
+  webServer.on("/speed", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 speed = value.toInt();
+                 broadcastInt("speed", speed);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(speed);
+               });
 
-  webServer.on("/twinkleSpeed", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    twinkleSpeed = value.toInt();
-    if (twinkleSpeed < 0) twinkleSpeed = 0;
-    else if (twinkleSpeed > 8) twinkleSpeed = 8;
-    writeAndCommitSettings();
-    broadcastInt("twinkleSpeed", twinkleSpeed);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(twinkleSpeed);
-  });
+  webServer.on("/twinkleSpeed", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 twinkleSpeed = value.toInt();
+                 if (twinkleSpeed < 0)
+                   twinkleSpeed = 0;
+                 else if (twinkleSpeed > 8)
+                   twinkleSpeed = 8;
+                 writeAndCommitSettings();
+                 broadcastInt("twinkleSpeed", twinkleSpeed);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(twinkleSpeed);
+               });
 
-  webServer.on("/twinkleDensity", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    twinkleDensity = value.toInt();
-    if (twinkleDensity < 0) twinkleDensity = 0;
-    else if (twinkleDensity > 8) twinkleDensity = 8;
-    writeAndCommitSettings();
-    broadcastInt("twinkleDensity", twinkleDensity);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(twinkleDensity);
-  });
+  webServer.on("/twinkleDensity", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 twinkleDensity = value.toInt();
+                 if (twinkleDensity < 0)
+                   twinkleDensity = 0;
+                 else if (twinkleDensity > 8)
+                   twinkleDensity = 8;
+                 writeAndCommitSettings();
+                 broadcastInt("twinkleDensity", twinkleDensity);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(twinkleDensity);
+               });
 
-  webServer.on("/coolLikeIncandescent", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    coolLikeIncandescent = value.toInt();
-    if (coolLikeIncandescent < 0) coolLikeIncandescent = 0;
-    else if (coolLikeIncandescent > 1) coolLikeIncandescent = 1;
-    writeAndCommitSettings();
-    broadcastInt("coolLikeIncandescent", coolLikeIncandescent);
-    sendInt(coolLikeIncandescent);
-  });
+  webServer.on("/coolLikeIncandescent", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 coolLikeIncandescent = value.toInt();
+                 if (coolLikeIncandescent < 0)
+                   coolLikeIncandescent = 0;
+                 else if (coolLikeIncandescent > 1)
+                   coolLikeIncandescent = 1;
+                 writeAndCommitSettings();
+                 broadcastInt("coolLikeIncandescent", coolLikeIncandescent);
+                 sendInt(coolLikeIncandescent);
+               });
 
-  webServer.on("/solidColor", HTTP_POST, []() {
-    String r = webServer.arg("r");
-    String g = webServer.arg("g");
-    String b = webServer.arg("b");
-    setSolidColor(r.toInt(), g.toInt(), b.toInt());
-    sendString(String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b));
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-  });
+  webServer.on("/solidColor", HTTP_POST, []()
+               {
+                 String r = webServer.arg("r");
+                 String g = webServer.arg("g");
+                 String b = webServer.arg("b");
+                 setSolidColor(r.toInt(), g.toInt(), b.toInt());
+                 sendString(String(solidColor.r) + "," + String(solidColor.g) + "," + String(solidColor.b));
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+               });
 
-  webServer.on("/pattern", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setPattern(value.toInt());
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(currentPatternIndex);
-  });
+  webServer.on("/pattern", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setPattern(value.toInt());
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(currentPatternIndex);
+               });
 
-  webServer.on("/patternName", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setPatternName(value);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(currentPatternIndex);
-  });
+  webServer.on("/patternName", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setPatternName(value);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(currentPatternIndex);
+               });
 
-  webServer.on("/palette", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setPalette(value.toInt());
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(currentPaletteIndex);
-  });
+  webServer.on("/palette", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setPalette(value.toInt());
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(currentPaletteIndex);
+               });
 
-  webServer.on("/paletteName", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setPaletteName(value);
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(currentPaletteIndex);
-  });
+  webServer.on("/paletteName", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setPaletteName(value);
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(currentPaletteIndex);
+               });
 
-  webServer.on("/brightness", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setBrightness(value.toInt());
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(brightness);
-  });
+  webServer.on("/brightness", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setBrightness(value.toInt());
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(brightness);
+               });
 
-  webServer.on("/autoplay", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setAutoplay(value.toInt());
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(autoplay);
-  });
+  webServer.on("/autoplay", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setAutoplay(value.toInt());
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(autoplay);
+               });
 
-  webServer.on("/autoplayDuration", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setAutoplayDuration(value.toInt());
-    webServer.sendHeader("Access-Control-Allow-Origin", "*");
-    sendInt(autoplayDuration);
-  });
+  webServer.on("/autoplayDuration", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setAutoplayDuration(value.toInt());
+                 webServer.sendHeader("Access-Control-Allow-Origin", "*");
+                 sendInt(autoplayDuration);
+               });
 
-  webServer.on("/showClock", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setShowClock(value.toInt());
-    sendInt(showClock);
-  });
+  webServer.on("/showClock", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setShowClock(value.toInt());
+                 sendInt(showClock);
+               });
 
-  webServer.on("/clockBackgroundFade", HTTP_POST, []() {
-    String value = webServer.arg("value");
-    setClockBackgroundFade(value.toInt());
-    sendInt(clockBackgroundFade);
-  });
+  webServer.on("/clockBackgroundFade", HTTP_POST, []()
+               {
+                 String value = webServer.arg("value");
+                 setClockBackgroundFade(value.toInt());
+                 sendInt(clockBackgroundFade);
+               });
 
   //list directory
   webServer.on("/list", HTTP_GET, handleFileList);
   //load editor
-  webServer.on("/edit", HTTP_GET, []() {
-    if (!handleFileRead("/edit.htm")) webServer.send(404, "text/plain", "FileNotFound");
-  });
+  webServer.on("/edit", HTTP_GET, []()
+               {
+                 if (!handleFileRead("/edit.htm"))
+                   webServer.send(404, "text/plain", "FileNotFound");
+               });
   //create file
   webServer.on("/edit", HTTP_PUT, handleFileCreate);
   //delete file
   webServer.on("/edit", HTTP_DELETE, handleFileDelete);
   //first callback is called after the request has ended with all parsed arguments
   //second callback handles file uploads at that location
-  webServer.on("/edit", HTTP_POST, []() {
+  webServer.on(
+      "/edit", HTTP_POST, []()
+      {
         webServer.sendHeader("Access-Control-Allow-Origin", "*");
         webServer.send(200, "text/plain", "");
-      }, handleFileUpload);
+      },
+      handleFileUpload);
 
   webServer.serveStatic("/", SPIFFS, "/", "max-age=86400");
 
@@ -537,7 +583,7 @@ void setup() {
   //  Serial.println("Web socket server started");
 
   autoPlayTimeout = millis() + (autoplayDuration * 1000);
-  
+
   timeClient.begin();
 }
 
@@ -563,7 +609,8 @@ void broadcastString(String name, String value)
   //  webSocketsServer.broadcastTXT(json);
 }
 
-void loop() {
+void loop()
+{
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random(65535));
 
@@ -576,12 +623,15 @@ void loop() {
   //  timeClient.update();
 
   static bool hasConnected = false;
-  EVERY_N_SECONDS(1) {
-    if (WiFi.status() != WL_CONNECTED) {
+  EVERY_N_SECONDS(1)
+  {
+    if (WiFi.status() != WL_CONNECTED)
+    {
       //      Serial.printf("Connecting to %s\n", ssid);
       hasConnected = false;
     }
-    else if (!hasConnected) {
+    else if (!hasConnected)
+    {
       hasConnected = true;
       MDNS.begin(nameString);
       MDNS.setHostname(nameString);
@@ -599,7 +649,8 @@ void loop() {
 
   //  handleIrInput();
 
-  if (power == 0) {
+  if (power == 0)
+  {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
     FastLED.show();
     delay(1000 / FRAMES_PER_SECOND);
@@ -611,18 +662,21 @@ void loop() {
   // }
 
   // change to a new cpt-city gradient palette
-  EVERY_N_SECONDS( secondsPerPalette ) {
-    gCurrentPaletteNumber = addmod8( gCurrentPaletteNumber, 1, gGradientPaletteCount);
-    gTargetPalette = gGradientPalettes[ gCurrentPaletteNumber ];
+  EVERY_N_SECONDS(secondsPerPalette)
+  {
+    gCurrentPaletteNumber = addmod8(gCurrentPaletteNumber, 1, gGradientPaletteCount);
+    gTargetPalette = gGradientPalettes[gCurrentPaletteNumber];
   }
 
-  EVERY_N_MILLISECONDS(40) {
+  EVERY_N_MILLISECONDS(40)
+  {
     // slowly blend the current palette to the next
-    nblendPaletteTowardPalette( gCurrentPalette, gTargetPalette, 8);
-    gHue++;  // slowly cycle the "base color" through the rainbow
+    nblendPaletteTowardPalette(gCurrentPalette, gTargetPalette, 8);
+    gHue++; // slowly cycle the "base color" through the rainbow
   }
 
-  if (autoplay && (millis() > autoPlayTimeout)) {
+  if (autoplay && (millis() > autoPlayTimeout))
+  {
     adjustPattern(true);
     autoPlayTimeout = millis() + (autoplayDuration * 1000);
   }
@@ -630,7 +684,8 @@ void loop() {
   // Call the current pattern function once, updating the 'leds' array
   patterns[currentPatternIndex].pattern();
 
-  if (showClock) drawAnalogClock();
+  if (showClock)
+    drawAnalogClock();
 
   FastLED.show();
 
@@ -887,7 +942,8 @@ void readSettings()
   // check for "magic number" so we know settings have been written to EEPROM
   // and it's not just full of random bytes
 
-  if (EEPROM.read(511) != 55) {
+  if (EEPROM.read(511) != 55)
+  {
     return;
   }
 
@@ -921,7 +977,7 @@ void readSettings()
     currentPaletteIndex = 0;
   else if (currentPaletteIndex >= paletteCount)
     currentPaletteIndex = paletteCount - 1;
-    
+
   showClock = EEPROM.read(9);
   clockBackgroundFade = EEPROM.read(10);
 }
@@ -997,7 +1053,8 @@ void adjustPattern(bool up)
   if (currentPatternIndex >= patternCount)
     currentPatternIndex = 0;
 
-  if (autoplay == 0) {
+  if (autoplay == 0)
+  {
     writeAndCommitSettings();
   }
 
@@ -1011,7 +1068,8 @@ void setPattern(uint8_t value)
 
   currentPatternIndex = value;
 
-  if (autoplay == 0) {
+  if (autoplay == 0)
+  {
     writeAndCommitSettings();
   }
 
@@ -1020,8 +1078,10 @@ void setPattern(uint8_t value)
 
 void setPatternName(String name)
 {
-  for (uint8_t i = 0; i < patternCount; i++) {
-    if (patterns[i].name == name) {
+  for (uint8_t i = 0; i < patternCount; i++)
+  {
+    if (patterns[i].name == name)
+    {
       setPattern(i);
       break;
     }
@@ -1040,8 +1100,10 @@ void setPalette(uint8_t value)
 
 void setPaletteName(String name)
 {
-  for (uint8_t i = 0; i < paletteCount; i++) {
-    if (paletteNames[i] == name) {
+  for (uint8_t i = 0; i < paletteCount; i++)
+  {
+    if (paletteNames[i] == name)
+    {
       setPalette(i);
       break;
     }
@@ -1066,7 +1128,8 @@ void setBrightness(uint8_t value)
 {
   if (value > 255)
     value = 255;
-  else if (value < 0) value = 0;
+  else if (value < 0)
+    value = 0;
 
   brightness = value;
 
@@ -1079,7 +1142,8 @@ void strandTest()
 {
   uint8_t i = speed;
 
-  if (i >= NUM_LEDS) i = NUM_LEDS - 1;
+  if (i >= NUM_LEDS)
+    i = NUM_LEDS - 1;
 
   fill_solid(leds, NUM_LEDS, CRGB::Black);
 
@@ -1096,7 +1160,7 @@ void showSolidColor()
 void rainbow()
 {
   // FastLED's built-in rainbow generator
-  fill_rainbow( leds, NUM_LEDS, gHue, 255 / NUM_LEDS);
+  fill_rainbow(leds, NUM_LEDS, gHue, 255 / NUM_LEDS);
 }
 
 void rainbowWithGlitter()
@@ -1114,7 +1178,7 @@ void rainbowSolid()
 void confetti()
 {
   // random colored speckles that blink in and fade smoothly
-  fadeToBlackBy( leds, NUM_LEDS, 10);
+  fadeToBlackBy(leds, NUM_LEDS, 10);
   int pos = random16(NUM_LEDS);
   // leds[pos] += CHSV( gHue + random8(64), 200, 255);
   leds[pos] += ColorFromPalette(palettes[currentPaletteIndex], gHue + random8(64));
@@ -1123,14 +1187,17 @@ void confetti()
 void sinelon()
 {
   // a colored dot sweeping back and forth, with fading trails
-  fadeToBlackBy( leds, NUM_LEDS, 20);
+  fadeToBlackBy(leds, NUM_LEDS, 20);
   int pos = beatsin16(speed, 0, NUM_LEDS);
   static int prevpos = 0;
   CRGB color = ColorFromPalette(palettes[currentPaletteIndex], gHue, 255);
-  if ( pos < prevpos ) {
-    fill_solid( leds + pos, (prevpos - pos) + 1, color);
-  } else {
-    fill_solid( leds + prevpos, (pos - prevpos) + 1, color);
+  if (pos < prevpos)
+  {
+    fill_solid(leds + pos, (prevpos - pos) + 1, color);
+  }
+  else
+  {
+    fill_solid(leds + prevpos, (pos - prevpos) + 1, color);
   }
   prevpos = pos;
 }
@@ -1138,41 +1205,64 @@ void sinelon()
 void bpm()
 {
   // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
-  uint8_t beat = beatsin8( speed, 64, 255);
+  uint8_t beat = beatsin8(speed, 64, 255);
   CRGBPalette16 palette = palettes[currentPaletteIndex];
-  for ( int i = 0; i < NUM_LEDS; i++) {
+  for (int i = 0; i < NUM_LEDS; i++)
+  {
     leds[i] = ColorFromPalette(palette, gHue + (i * 2), beat - gHue + (i * 10));
   }
 }
 
 void juggle()
 {
-  static uint8_t    numdots =   4; // Number of dots in use.
-  static uint8_t   faderate =   2; // How long should the trails be. Very low value = longer trails.
-  static uint8_t     hueinc =  255 / numdots - 1; // Incremental change in hue between each dot.
-  static uint8_t    thishue =   0; // Starting hue.
-  static uint8_t     curhue =   0; // The current hue
-  static uint8_t    thissat = 255; // Saturation of the colour.
-  static uint8_t thisbright = 255; // How bright should the LED/display be.
-  static uint8_t   basebeat =   5; // Higher = faster movement.
+  static uint8_t numdots = 4;                // Number of dots in use.
+  static uint8_t faderate = 2;               // How long should the trails be. Very low value = longer trails.
+  static uint8_t hueinc = 255 / numdots - 1; // Incremental change in hue between each dot.
+  static uint8_t thishue = 0;                // Starting hue.
+  static uint8_t curhue = 0;                 // The current hue
+  static uint8_t thissat = 255;              // Saturation of the colour.
+  static uint8_t thisbright = 255;           // How bright should the LED/display be.
+  static uint8_t basebeat = 5;               // Higher = faster movement.
 
- static uint8_t lastSecond =  99;  // Static variable, means it's only defined once. This is our 'debounce' variable.
+  static uint8_t lastSecond = 99;              // Static variable, means it's only defined once. This is our 'debounce' variable.
   uint8_t secondHand = (millis() / 1000) % 30; // IMPORTANT!!! Change '30' to a different value to change duration of the loop.
 
-  if (lastSecond != secondHand) { // Debounce to make sure we're not repeating an assignment.
+  if (lastSecond != secondHand)
+  { // Debounce to make sure we're not repeating an assignment.
     lastSecond = secondHand;
-    switch (secondHand) {
-      case  0: numdots = 1; basebeat = 20; hueinc = 16; faderate = 2; thishue = 0; break; // You can change values here, one at a time , or altogether.
-      case 10: numdots = 4; basebeat = 10; hueinc = 16; faderate = 8; thishue = 128; break;
-      case 20: numdots = 8; basebeat =  3; hueinc =  0; faderate = 8; thishue = random8(); break; // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
-      case 30: break;
+    switch (secondHand)
+    {
+    case 0:
+      numdots = 1;
+      basebeat = 20;
+      hueinc = 16;
+      faderate = 2;
+      thishue = 0;
+      break; // You can change values here, one at a time , or altogether.
+    case 10:
+      numdots = 4;
+      basebeat = 10;
+      hueinc = 16;
+      faderate = 8;
+      thishue = 128;
+      break;
+    case 20:
+      numdots = 8;
+      basebeat = 3;
+      hueinc = 0;
+      faderate = 8;
+      thishue = random8();
+      break; // Only gets called once, and not continuously for the next several seconds. Therefore, no rainbows.
+    case 30:
+      break;
     }
   }
 
   // Several colored dots, weaving in and out of sync with each other
   curhue = thishue; // Reset the hue values.
   fadeToBlackBy(leds, NUM_LEDS, faderate);
-  for ( int i = 0; i < numdots; i++) {
+  for (int i = 0; i < numdots; i++)
+  {
     //beat16 is a FastLED 3.1 function
     leds[beatsin16(basebeat + i + numdots, 0, NUM_LEDS)] += CHSV(gHue + curhue, thissat, thisbright);
     curhue += hueinc;
@@ -1192,60 +1282,66 @@ void water()
 // Pride2015 by Mark Kriegsman: https://gist.github.com/kriegsman/964de772d64c502760e5
 // This function draws rainbows with an ever-changing,
 // widely-varying set of parameters.
-void pride() {
+void pride()
+{
   fillWithPride(false);
 }
 
-void prideFibonacci() {
+void prideFibonacci()
+{
   fillWithPride(true);
 }
 
-void fillWithPride(bool useFibonacciOrder) {
+void fillWithPride(bool useFibonacciOrder)
+{
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
   static uint16_t sHue16 = 0;
 
-  uint8_t sat8 = beatsin88( 87, 220, 250);
-  uint8_t brightdepth = beatsin88( 341, 96, 224);
-  uint16_t brightnessthetainc16 = beatsin88( 203, (25 * 256), (40 * 256));
+  uint8_t sat8 = beatsin88(87, 220, 250);
+  uint8_t brightdepth = beatsin88(341, 96, 224);
+  uint16_t brightnessthetainc16 = beatsin88(203, (25 * 256), (40 * 256));
   uint8_t msmultiplier = beatsin88(147, 23, 60);
 
-  uint16_t hue16 = sHue16;//gHue * 256;
+  uint16_t hue16 = sHue16; //gHue * 256;
   uint16_t hueinc16 = beatsin88(113, 1, 3000);
 
   uint16_t ms = millis();
-  uint16_t deltams = ms - sLastMillis ;
-  sLastMillis  = ms;
+  uint16_t deltams = ms - sLastMillis;
+  sLastMillis = ms;
   sPseudotime += deltams * msmultiplier;
-  sHue16 += deltams * beatsin88( 400, 5, 9);
+  sHue16 += deltams * beatsin88(400, 5, 9);
   uint16_t brightnesstheta16 = sPseudotime;
 
-  for ( uint16_t i = 0 ; i < NUM_LEDS; i++) {
+  for (uint16_t i = 0; i < NUM_LEDS; i++)
+  {
     hue16 += hueinc16;
     uint8_t hue8 = hue16 / 256;
 
-    brightnesstheta16  += brightnessthetainc16;
-    uint16_t b16 = sin16( brightnesstheta16  ) + 32768;
+    brightnesstheta16 += brightnessthetainc16;
+    uint16_t b16 = sin16(brightnesstheta16) + 32768;
 
     uint16_t bri16 = (uint32_t)((uint32_t)b16 * (uint32_t)b16) / 65536;
     uint8_t bri8 = (uint32_t)(((uint32_t)bri16) * brightdepth) / 65536;
     bri8 += (255 - brightdepth);
 
-    CRGB newcolor = CHSV( hue8, sat8, bri8);
+    CRGB newcolor = CHSV(hue8, sat8, bri8);
 
     uint16_t pixelnumber = i;
 
-    if (useFibonacciOrder) pixelnumber = fibonacciToPhysical[i];
-    
+    if (useFibonacciOrder)
+      pixelnumber = fibonacciToPhysical[i];
+
     pixelnumber = (NUM_LEDS - 1) - pixelnumber;
 
-    nblend( leds[pixelnumber], newcolor, 64);
+    nblend(leds[pixelnumber], newcolor, 64);
   }
 }
 
 void radialPaletteShift()
 {
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
+  for (uint16_t i = 0; i < NUM_LEDS; i++)
+  {
     // leds[i] = ColorFromPalette( gCurrentPalette, gHue + sin8(i*16), brightness);
     leds[fibonacciToPhysical[i]] = ColorFromPalette(gCurrentPalette, i + gHue, 255, LINEARBLEND);
   }
@@ -1253,7 +1349,8 @@ void radialPaletteShift()
 
 void radialPaletteShiftOutward()
 {
-  for (uint16_t i = 0; i < NUM_LEDS; i++) {
+  for (uint16_t i = 0; i < NUM_LEDS; i++)
+  {
     leds[fibonacciToPhysical[i]] = ColorFromPalette(gCurrentPalette, i - gHue, 255, LINEARBLEND);
   }
 }
@@ -1272,42 +1369,49 @@ void heatMap(CRGBPalette16 palette, bool up)
   byte colorindex;
 
   // Step 1.  Cool down every cell a little
-  for ( uint16_t i = 0; i < NUM_LEDS; i++) {
-    heat[i] = qsub8( heat[i],  random8(0, ((cooling * 10) / NUM_LEDS) + 2));
+  for (uint16_t i = 0; i < NUM_LEDS; i++)
+  {
+    heat[i] = qsub8(heat[i], random8(0, ((cooling * 10) / NUM_LEDS) + 2));
   }
 
   // Step 2.  Heat from each cell drifts 'up' and diffuses a little
-  for ( uint16_t k = NUM_LEDS - 1; k >= 2; k--) {
-    heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
+  for (uint16_t k = NUM_LEDS - 1; k >= 2; k--)
+  {
+    heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2]) / 3;
   }
 
   // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
-  if ( random8() < sparking ) {
+  if (random8() < sparking)
+  {
     int y = random8(7);
-    heat[y] = qadd8( heat[y], random8(160, 255) );
+    heat[y] = qadd8(heat[y], random8(160, 255));
   }
 
   // Step 4.  Map from heat cells to LED colors
-  for ( uint16_t j = 0; j < NUM_LEDS; j++) {
+  for (uint16_t j = 0; j < NUM_LEDS; j++)
+  {
     // Scale the heat value from 0-255 down to 0-240
     // for best results with color palettes.
     colorindex = scale8(heat[j], 190);
 
     CRGB color = ColorFromPalette(palette, colorindex);
 
-    if (up) {
+    if (up)
+    {
       leds[j] = color;
     }
-    else {
+    else
+    {
       leds[(NUM_LEDS - 1) - j] = color;
     }
   }
 }
 
-void addGlitter( uint8_t chanceOfGlitter)
+void addGlitter(uint8_t chanceOfGlitter)
 {
-  if ( random8() < chanceOfGlitter) {
-    leds[ random16(NUM_LEDS) ] += CRGB::White;
+  if (random8() < chanceOfGlitter)
+  {
+    leds[random16(NUM_LEDS)] += CRGB::White;
   }
 }
 
@@ -1319,61 +1423,67 @@ void addGlitter( uint8_t chanceOfGlitter)
 extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
 extern const uint8_t gGradientPaletteCount;
 
-uint8_t beatsaw8( accum88 beats_per_minute, uint8_t lowest = 0, uint8_t highest = 255,
-                  uint32_t timebase = 0, uint8_t phase_offset = 0)
+uint8_t beatsaw8(accum88 beats_per_minute, uint8_t lowest = 0, uint8_t highest = 255,
+                 uint32_t timebase = 0, uint8_t phase_offset = 0)
 {
-  uint8_t beat = beat8( beats_per_minute, timebase);
+  uint8_t beat = beat8(beats_per_minute, timebase);
   uint8_t beatsaw = beat + phase_offset;
   uint8_t rangewidth = highest - lowest;
-  uint8_t scaledbeat = scale8( beatsaw, rangewidth);
+  uint8_t scaledbeat = scale8(beatsaw, rangewidth);
   uint8_t result = lowest + scaledbeat;
   return result;
 }
 
-void colorWaves() {
+void colorWaves()
+{
   fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette, false);
 }
 
-void colorWavesFibonacci() {
+void colorWavesFibonacci()
+{
   fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette, true);
 }
 
 // ColorWavesWithPalettes by Mark Kriegsman: https://gist.github.com/kriegsman/8281905786e8b2632aeb
 // This function draws color waves with an ever-changing,
 // widely-varying set of parameters, using a color palette.
-void fillWithColorWaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette, bool useFibonacciOrder)
+void fillWithColorWaves(CRGB *ledarray, uint16_t numleds, CRGBPalette16 &palette, bool useFibonacciOrder)
 {
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
   static uint16_t sHue16 = 0;
 
   // uint8_t sat8 = beatsin88( 87, 220, 250);
-  uint8_t brightdepth = beatsin88( 341, 96, 224);
-  uint16_t brightnessthetainc16 = beatsin88( 203, (25 * 256), (40 * 256));
+  uint8_t brightdepth = beatsin88(341, 96, 224);
+  uint16_t brightnessthetainc16 = beatsin88(203, (25 * 256), (40 * 256));
   uint8_t msmultiplier = beatsin88(147, 23, 60);
 
-  uint16_t hue16 = sHue16;//gHue * 256;
+  uint16_t hue16 = sHue16; //gHue * 256;
   uint16_t hueinc16 = beatsin88(113, 300, 1500);
 
   uint16_t ms = millis();
-  uint16_t deltams = ms - sLastMillis ;
-  sLastMillis  = ms;
+  uint16_t deltams = ms - sLastMillis;
+  sLastMillis = ms;
   sPseudotime += deltams * msmultiplier;
-  sHue16 += deltams * beatsin88( 400, 5, 9);
+  sHue16 += deltams * beatsin88(400, 5, 9);
   uint16_t brightnesstheta16 = sPseudotime;
 
-  for ( uint16_t i = 0 ; i < numleds; i++) {
+  for (uint16_t i = 0; i < numleds; i++)
+  {
     hue16 += hueinc16;
     uint8_t hue8 = hue16 / 256;
     uint16_t h16_128 = hue16 >> 7;
-    if ( h16_128 & 0x100) {
+    if (h16_128 & 0x100)
+    {
       hue8 = 255 - (h16_128 >> 1);
-    } else {
+    }
+    else
+    {
       hue8 = h16_128 >> 1;
     }
 
-    brightnesstheta16  += brightnessthetainc16;
-    uint16_t b16 = sin16( brightnesstheta16  ) + 32768;
+    brightnesstheta16 += brightnessthetainc16;
+    uint16_t b16 = sin16(brightnesstheta16) + 32768;
 
     uint16_t bri16 = (uint32_t)((uint32_t)b16 * (uint32_t)b16) / 65536;
     uint8_t bri8 = (uint32_t)(((uint32_t)bri16) * brightdepth) / 65536;
@@ -1381,25 +1491,26 @@ void fillWithColorWaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palett
 
     uint8_t index = hue8;
     //index = triwave8( index);
-    index = scale8( index, 240);
+    index = scale8(index, 240);
 
-    CRGB newcolor = ColorFromPalette( palette, index, bri8);
+    CRGB newcolor = ColorFromPalette(palette, index, bri8);
 
     uint16_t pixelnumber = i;
 
-    if (useFibonacciOrder) pixelnumber = fibonacciToPhysical[i];
-    
+    if (useFibonacciOrder)
+      pixelnumber = fibonacciToPhysical[i];
+
     pixelnumber = (numleds - 1) - pixelnumber;
 
-    nblend( ledarray[pixelnumber], newcolor, 128);
+    nblend(ledarray[pixelnumber], newcolor, 128);
   }
 }
 
 // Alternate rendering function just scrolls the current palette
 // across the defined LED strip.
-void palettetest( CRGB* ledarray, uint16_t numleds, const CRGBPalette16& gCurrentPalette)
+void palettetest(CRGB *ledarray, uint16_t numleds, const CRGBPalette16 &gCurrentPalette)
 {
   static uint8_t startindex = 0;
   startindex--;
-  fill_palette( ledarray, numleds, startindex, (256 / NUM_LEDS) + 1, gCurrentPalette, 255, LINEARBLEND);
+  fill_palette(ledarray, numleds, startindex, (256 / NUM_LEDS) + 1, gCurrentPalette, 255, LINEARBLEND);
 }
