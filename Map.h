@@ -1,8 +1,16 @@
-uint8_t physicalToFibonacci[NUM_LEDS] = { 0, 13, 26, 39, 52, 57, 44, 31, 18, 5, 10, 23, 36, 49, 62, 54, 41, 28, 15, 2, 7, 20, 33, 46, 59, 51, 38, 25, 12, 4, 17, 30, 43, 56, 61, 48, 35, 22, 9, 1, 14, 27, 40, 53, 58, 45, 32, 19, 6, 11, 24, 37, 50, 63, 55, 42, 29, 16, 3, 8, 21, 34, 47, 60 };
-uint8_t fibonacciToPhysical[NUM_LEDS] = { 0, 39, 19, 58, 29, 9, 48, 20, 59, 38, 10, 49, 28, 1, 40, 18, 57, 30, 8, 47, 21, 60, 37, 11, 50, 27, 2, 41, 17, 56, 31, 7, 46, 22, 61, 36, 12, 51, 26, 3, 42, 16, 55, 32, 6, 45, 23, 62, 35, 13, 52, 25, 4, 43, 15, 54, 33, 5, 44, 24, 63, 34, 14, 53 };
-uint8_t coordsX[NUM_LEDS] = { 140, 189, 208, 214, 208, 146, 168, 180, 180, 162, 152, 146, 129, 103, 72, 40, 70, 97, 120, 131, 107, 79, 50, 23, 0, 7, 23, 46, 76, 93, 57, 37, 28, 29, 87, 68, 59, 62, 80, 113, 91, 94, 109, 133, 202, 172, 145, 125, 117, 145, 170, 198, 227, 253, 255, 235, 210, 181, 148, 175, 207, 228, 240, 244 };
-uint8_t coordsY[NUM_LEDS] = { 128, 114, 91, 63, 34, 0, 21, 48, 76, 106, 78, 47, 25, 11, 5, 38, 35, 42, 61, 101, 87, 69, 68, 78, 98, 143, 118, 102, 98, 122, 131, 152, 179, 209, 255, 230, 202, 174, 148, 142, 181, 210, 235, 252, 235, 234, 224, 203, 170, 183, 201, 205, 198, 181, 134, 157, 171, 173, 153, 145, 138, 120, 93, 63 };
+uint8_t coordsX[NUM_LEDS] = { 151, 188, 199, 199, 171, 147, 131, 119, 124, 179, 200, 217, 237, 249, 242, 234, 255, 148, 175, 177, 150, 143, 171, 153, 155, 106, 110, 102, 75, 86, 106, 108, 88, 90, 84, 78, 107, 98, 121, 128, 80, 69, 134, 159, 192, 202, 195, 218, 61, 32, 18, 26, 39, 20, 3, 0, 48, 52, 61, 54, 33, 20, 7, 8 };
+uint8_t coordsY[NUM_LEDS] = { 190, 204, 225, 252, 255, 236, 216, 191, 166, 147, 154, 170, 173, 156, 131, 107, 106, 148, 121, 86, 81, 63, 56, 36, 17, 145, 120, 96, 55, 23, 18, 0, 2, 112, 77, 31, 35, 49, 51, 30, 124, 103, 101, 98, 80, 58, 40, 69, 134, 124, 107, 81, 56, 43, 50, 70, 156, 180, 202, 219, 213, 195, 197, 215 };
 uint8_t angles[NUM_LEDS] = { 0, 249, 241, 232, 223, 200, 208, 217, 226, 235, 212, 203, 194, 185, 176, 162, 171, 180, 188, 197, 174, 165, 156, 147, 139, 124, 133, 142, 151, 136, 128, 119, 110, 101, 78, 86, 95, 104, 113, 99, 90, 81, 72, 63, 40, 49, 58, 67, 75, 52, 43, 34, 25, 17, 2, 11, 20, 29, 38, 14, 6, 255, 246, 237 };
+uint8_t body[NUM_LEDS] = { 0, 16, 32, 48, 64, 80, 96, 112, 128, 143, 159, 175, 191, 207, 223, 239, 255, 143, 159, 175, 191, 207, 223, 239, 255, 143, 159, 175, 191, 207, 223, 239, 255, 143, 159, 175, 191, 207, 223, 239, 143, 159, 175, 191, 207, 223, 239, 255, 143, 159, 175, 191, 207, 223, 239, 255, 143, 159, 175, 191, 207, 223, 239, 255 };
+
+// uint8_t head[9] = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
+// uint8_t tentacle0[8] = { 9, 10, 11, 12, 13, 14, 15, 16 };
+// uint8_t tentacle1[8] = { 17, 18, 19, 20, 21, 22, 23, 24 };
+// uint8_t tentacle2[8] = { 25, 26, 27, 28, 29, 30, 31, 32 };
+// uint8_t tentacle3[8] = { 33, 34, 35, 36, 37, 38, 39 };
+// uint8_t tentacle4[8] = { 40, 41, 42, 43, 44, 45, 46, 47 };
+// uint8_t tentacle5[8] = { 48, 49, 50, 51, 52, 53, 54, 55 };
+// uint8_t tentacle6[8] = { 56, 57, 58, 59, 60, 61, 62, 63 };
 
 void setPixelAR(uint8_t angle, uint8_t dAngle, uint8_t radius, uint8_t dRadius, CRGB color)
 {
@@ -18,7 +26,7 @@ void setPixelAR(uint8_t angle, uint8_t dAngle, uint8_t radius, uint8_t dRadius, 
     uint8_t ao = angles[o];
 
     if (ao <= amax && ao >= amin) {
-      uint8_t ro = physicalToFibonacci[o];
+      uint8_t ro = body[o];
 
       if (ro <= rmax && ro >= rmin) {
         leds[i] = color;
@@ -38,7 +46,7 @@ void andPixelAR(uint8_t angle, uint8_t dAngle, uint8_t startRadius, uint8_t endR
     uint8_t ao = angles[o];
 
     if (ao <= amax && ao >= amin) {
-      uint8_t ro = physicalToFibonacci[o];
+      uint8_t ro = body[o];
 
       if (ro <= endRadius && ro >= startRadius) {
         leds[i] += color;
@@ -63,12 +71,22 @@ void antialiasPixelAR(uint8_t angle, uint8_t dAngle, uint8_t startRadius, uint8_
     faded.fadeToBlackBy(fade);
 
     if (ao <= amax && ao >= amin) {
-      uint8_t ro = physicalToFibonacci[o];
+      uint8_t ro = body[o];
 
       if (ro <= endRadius && ro >= startRadius) {
         leds[i] += faded;
       }
     }
+  }
+}
+
+void bodyPalette() {
+  uint8_t hues = 1;
+
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    uint8_t x = body[i];
+
+    leds[i] = ColorFromPalette(palettes[currentPaletteIndex], beat8(speed) - (x * hues));
   }
 }
 
@@ -86,7 +104,7 @@ void radiusPalette() {
   uint8_t hues = 1;
 
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    uint8_t r = physicalToFibonacci[i];
+    uint8_t r = body[i];
     
     leds[i] = ColorFromPalette(palettes[currentPaletteIndex], beat8(speed) - (r * hues));
   }
@@ -108,7 +126,7 @@ void yPalette() {
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
     uint8_t y = coordsY[i];
 
-    leds[i] = ColorFromPalette(palettes[currentPaletteIndex], beat8(speed) - (y * hues));
+    leds[i] = ColorFromPalette(palettes[currentPaletteIndex], beat8(speed) + (y * hues));
   }
 }
 
@@ -137,9 +155,19 @@ void radiusGradientPalette() {
   uint8_t hues = 1;
 
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    uint8_t r = physicalToFibonacci[i];
+    uint8_t r = body[i];
     
     leds[i] = ColorFromPalette(gCurrentPalette, beat8(speed) - (r * hues));
+  }
+}
+
+void bodyGradientPalette() {
+  uint8_t hues = 1;
+  
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    uint8_t x = body[i];
+
+    leds[i] = ColorFromPalette(gCurrentPalette, beat8(speed) - (x * hues));
   }
 }
 
@@ -159,7 +187,7 @@ void yGradientPalette() {
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
     uint8_t y = coordsY[i];
 
-    leds[i] = ColorFromPalette(gCurrentPalette, beat8(speed) - (y * hues));
+    leds[i] = ColorFromPalette(gCurrentPalette, beat8(speed) + (y * hues));
   }
 }
 

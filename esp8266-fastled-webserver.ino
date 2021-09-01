@@ -112,7 +112,7 @@ CRGBPalette16 gTargetPalette(gGradientPalettes[0]);
 
 CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
 
-uint8_t currentPatternIndex = 3; // Index number of which pattern is current
+uint8_t currentPatternIndex = 0; // Index number of which pattern is current
 uint8_t autoplay = 0;
 
 uint8_t autoplayDuration = 10;
@@ -186,15 +186,12 @@ typedef PatternAndName PatternAndNameList[];
 
 PatternAndNameList patterns = {
     {pride, "Pride"},
-    {prideFibonacci, "Pride Fibonacci"},
     {colorWaves, "Color Waves"},
-    {colorWavesFibonacci, "Color Waves Fibonacci"},
-
     {pridePlayground, "Pride Playground"},
-    {pridePlaygroundFibonacci, "Pride Playground Fibonacci"},
-
     {colorWavesPlayground, "Color Waves Playground"},
-    {colorWavesPlaygroundFibonacci, "Color Waves Playground Fibonacci"},
+
+    {bodyPalette, "Kraken Palette"},
+    {bodyGradientPalette, "Kraken Gradient Palette"},
 
     // matrix patterns
     {anglePalette, "Angle Palette"},
@@ -282,7 +279,7 @@ void setup()
   FastLED.show();
 
   EEPROM.begin(512);
-  readSettings();
+  // readSettings();
 
   FastLED.setBrightness(brightness);
 
@@ -338,7 +335,7 @@ void setup()
   String macIdString = macID;
   macIdString.toUpperCase();
 
-  nameString = "Fibonacci64-" + macIdString;
+  nameString = "Kraken64-" + macIdString;
 
   char nameChar[nameString.length() + 1];
   memset(nameChar, 0, nameString.length() + 1);
@@ -1284,16 +1281,6 @@ void water()
 // widely-varying set of parameters.
 void pride()
 {
-  fillWithPride(false);
-}
-
-void prideFibonacci()
-{
-  fillWithPride(true);
-}
-
-void fillWithPride(bool useFibonacciOrder)
-{
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
   static uint16_t sHue16 = 0;
@@ -1329,9 +1316,6 @@ void fillWithPride(bool useFibonacciOrder)
 
     uint16_t pixelnumber = i;
 
-    if (useFibonacciOrder)
-      pixelnumber = fibonacciToPhysical[i];
-
     pixelnumber = (NUM_LEDS - 1) - pixelnumber;
 
     nblend(leds[pixelnumber], newcolor, 64);
@@ -1343,7 +1327,7 @@ void radialPaletteShift()
   for (uint16_t i = 0; i < NUM_LEDS; i++)
   {
     // leds[i] = ColorFromPalette( gCurrentPalette, gHue + sin8(i*16), brightness);
-    leds[fibonacciToPhysical[i]] = ColorFromPalette(gCurrentPalette, i + gHue, 255, LINEARBLEND);
+    leds[body[i]] = ColorFromPalette(gCurrentPalette, i + gHue, 255, LINEARBLEND);
   }
 }
 
@@ -1351,7 +1335,7 @@ void radialPaletteShiftOutward()
 {
   for (uint16_t i = 0; i < NUM_LEDS; i++)
   {
-    leds[fibonacciToPhysical[i]] = ColorFromPalette(gCurrentPalette, i - gHue, 255, LINEARBLEND);
+    leds[body[i]] = ColorFromPalette(gCurrentPalette, i - gHue, 255, LINEARBLEND);
   }
 }
 
@@ -1436,18 +1420,13 @@ uint8_t beatsaw8(accum88 beats_per_minute, uint8_t lowest = 0, uint8_t highest =
 
 void colorWaves()
 {
-  fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette, false);
-}
-
-void colorWavesFibonacci()
-{
-  fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette, true);
+  fillWithColorWaves(leds, NUM_LEDS, gCurrentPalette);
 }
 
 // ColorWavesWithPalettes by Mark Kriegsman: https://gist.github.com/kriegsman/8281905786e8b2632aeb
 // This function draws color waves with an ever-changing,
 // widely-varying set of parameters, using a color palette.
-void fillWithColorWaves(CRGB *ledarray, uint16_t numleds, CRGBPalette16 &palette, bool useFibonacciOrder)
+void fillWithColorWaves(CRGB *ledarray, uint16_t numleds, CRGBPalette16 &palette)
 {
   static uint16_t sPseudotime = 0;
   static uint16_t sLastMillis = 0;
@@ -1496,9 +1475,6 @@ void fillWithColorWaves(CRGB *ledarray, uint16_t numleds, CRGBPalette16 &palette
     CRGB newcolor = ColorFromPalette(palette, index, bri8);
 
     uint16_t pixelnumber = i;
-
-    if (useFibonacciOrder)
-      pixelnumber = fibonacciToPhysical[i];
 
     pixelnumber = (numleds - 1) - pixelnumber;
 
