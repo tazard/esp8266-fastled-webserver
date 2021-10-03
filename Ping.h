@@ -32,14 +32,15 @@
 
 // This was a feature I needed for my own devices, of which there are dozens.  :)
 
-const bool discovery = true;
+const bool discovery = false;
 const String serverName = "https://ping.evilgeniuslabs.org"; // address of server to ping
+const String fingerPrint = "AD 1F CB D9 A0 BC 17 D5 5B F2 E1 BF 98 D1 06 CD AC 3F B8 33"; // server SSL cert fingerprint
 
 void checkPingTimer() {
   if (!discovery) 
     return;
   
-  const unsigned long pingDelay = 600000; /// 60 * 10 * 1000; // 10 minutes
+  const unsigned long pingDelay = 6000000; /// 60 * 10 * 10000; // 100 minutes
   static unsigned long lastPingTime = pingDelay;
 
   if ((millis() - lastPingTime) > pingDelay) {
@@ -49,9 +50,7 @@ void checkPingTimer() {
     if (WiFi.status() == WL_CONNECTED) {
       Serial.println("Connected, ready to ping");
       HTTPClient http;      
-      BearSSL::WiFiClientSecure newSecure;
-      newSecure.setInsecure();
-      http.begin(newSecure, serverName);
+      http.begin(serverName, fingerPrint);
       http.addHeader("Content-Type", "application/json");
       String deviceName = "\"deviceName\":\"" + nameString;
       String localIp = WiFi.localIP().toString();

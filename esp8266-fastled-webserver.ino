@@ -630,7 +630,7 @@ void loop() {
       Serial.print(nameString);
       Serial.println(".local in your browser");
     }
-    else {
+    else if (showClock) {
       timeClient.update();
     }
   }
