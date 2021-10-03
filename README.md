@@ -70,6 +70,10 @@ The app depends on the following libraries. They must either be downloaded from 
 
 Download the app code from GitHub using the green Clone or Download button from [the GitHub project main page](https://github.com/jasoncoon/esp8266-fastled-webserver) and click Download ZIP. Decompress the ZIP file in your Arduino sketch folder.
 
+Here are the board settings I use:
+
+![image](https://user-images.githubusercontent.com/3598755/135755572-52d4d0db-1dba-4388-a86c-a293e4f13878.png)
+
 The web app needs to be uploaded to the ESP8266's SPIFFS.  You can do this within the Arduino IDE after installing the [Arduino ESP8266FS tool](http://esp8266.github.io/Arduino/versions/2.3.0/doc/filesystem.html#uploading-files-to-file-system).
 
 With ESP8266FS installed upload the web app using `ESP8266 Sketch Data Upload` command in the Arduino Tools menu.
