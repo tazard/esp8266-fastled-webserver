@@ -242,57 +242,63 @@ String setSHueMax(String value) {
   sHueMax = value.toInt(); return value;
 }
 
+// name, label, type, min, max, getValue, getOptions, setValue
 FieldList fields = {
-    {"name", "Name", LabelFieldType, 0, 0, getName},
+    {"name",       "Name",       LabelFieldType,   0,            0, getName,       nullptr,     nullptr},
 
-    {"power", "Power", BooleanFieldType, 0, 1, getPower},
-    {"brightness", "Brightness", NumberFieldType, 1, 255, getBrightness},
-    {"pattern", "Pattern", SelectFieldType, 0, patternCount, getPattern, getPatterns},
-    {"palette", "Palette", SelectFieldType, 0, paletteCount, getPalette, getPalettes},
-    {"speed", "Speed", NumberFieldType, 1, 255, getSpeed},
+    {"power",      "Power",      BooleanFieldType, 0,            1, getPower,      nullptr,     nullptr},
+    {"brightness", "Brightness", NumberFieldType,  1,          255, getBrightness, nullptr,     nullptr},
+    {"pattern",    "Pattern",    SelectFieldType,  0, patternCount, getPattern,    getPatterns, nullptr},
+    {"palette",    "Palette",    SelectFieldType,  0, paletteCount, getPalette,    getPalettes, nullptr},
+    {"speed",      "Speed",      NumberFieldType,  1,          255, getSpeed,      nullptr,     nullptr},
 
-    {"autoplaySection", "Autoplay", SectionFieldType},
-    {"autoplay", "Autoplay", BooleanFieldType, 0, 1, getAutoplay},
-    {"autoplayDuration", "Autoplay Duration", NumberFieldType, 0, 255, getAutoplayDuration},
+    //--------------------------------------------------------------------------------------------------------
+    {"autoplaySection",  "Autoplay",          SectionFieldType, 0,   0, nullptr,             nullptr, nullptr},
+    {"autoplay",         "Autoplay",          BooleanFieldType, 0,   1, getAutoplay,         nullptr, nullptr},
+    {"autoplayDuration", "Autoplay Duration", NumberFieldType,  0, 255, getAutoplayDuration, nullptr, nullptr},
 
-    {"solidColorSection", "Solid Color", SectionFieldType},
-    {"solidColor", "Color", ColorFieldType, 0, 255, getSolidColor},
+    //--------------------------------------------------------------------------------------------------------
+    {"solidColorSection", "Solid Color", SectionFieldType, 0,   0, nullptr,       nullptr, nullptr},
+    {"solidColor",        "Color",       ColorFieldType,   0, 255, getSolidColor, nullptr, nullptr},
 
-    {"fireSection", "Fire & Water", SectionFieldType},
-    {"cooling", "Cooling", NumberFieldType, 0, 255, getCooling},
-    {"sparking", "Sparking", NumberFieldType, 0, 255, getSparking},
+    //--------------------------------------------------------------------------------------------------------
+    {"fireSection", "Fire & Water", SectionFieldType, 0,   0, nullptr,     nullptr, nullptr},
+    {"cooling",     "Cooling",      NumberFieldType,  0, 255, getCooling,  nullptr, nullptr},
+    {"sparking",    "Sparking",     NumberFieldType,  0, 255, getSparking, nullptr, nullptr},
 
-    {"twinklesSection", "Twinkles", SectionFieldType},
-    {"twinkleSpeed", "Twinkle Speed", NumberFieldType, 0, 8, getTwinkleSpeed},
-    {"twinkleDensity", "Twinkle Density", NumberFieldType, 0, 8, getTwinkleDensity},
-    {"coolLikeIncandescent", "Incandescent Cool", BooleanFieldType, 0, 1, getCoolLikeIncandescent},
+    //--------------------------------------------------------------------------------------------------------
+    {"twinklesSection",      "Twinkles",          SectionFieldType, 0, 0, nullptr,                 nullptr, nullptr},
+    {"twinkleSpeed",         "Twinkle Speed",     NumberFieldType,  0, 8, getTwinkleSpeed,         nullptr, nullptr},
+    {"twinkleDensity",       "Twinkle Density",   NumberFieldType,  0, 8, getTwinkleDensity,       nullptr, nullptr},
+    {"coolLikeIncandescent", "Incandescent Cool", BooleanFieldType, 0, 1, getCoolLikeIncandescent, nullptr, nullptr},
 
 
-    {"prideSection", "Pride", SectionFieldType},
+    //--------------------------------------------------------------------------------------------------------
+    {"prideSection",  "Pride",          SectionFieldType, 0,   0, nullptr, nullptr, nullptr},
 
-    {"saturationBpm", "Saturation BPM", NumberFieldType, 0, 255, getSaturationBpm, NULL, setSaturationBpm},
-    {"saturationMin", "Saturation Min", NumberFieldType, 0, 255, getSaturationMin, NULL, setSaturationMin},
-    {"saturationMax", "Saturation Max", NumberFieldType, 0, 255, getSaturationMax, NULL, setSaturationMax},
+    {"saturationBpm", "Saturation BPM", NumberFieldType,  0, 255, getSaturationBpm, nullptr, setSaturationBpm},
+    {"saturationMin", "Saturation Min", NumberFieldType,  0, 255, getSaturationMin, nullptr, setSaturationMin},
+    {"saturationMax", "Saturation Max", NumberFieldType,  0, 255, getSaturationMax, nullptr, setSaturationMax},
 
-    {"brightDepthBpm", "Brightness Depth BPM", NumberFieldType, 0, 255, getBrightDepthBpm, NULL, setBrightDepthBpm},
-    {"brightDepthMin", "Brightness Depth Min", NumberFieldType, 0, 255, getBrightDepthMin, NULL, setBrightDepthMin},
-    {"brightDepthMax", "Brightness Depth Max", NumberFieldType, 0, 255, getBrightDepthMax, NULL, setBrightDepthMax},
+    {"brightDepthBpm", "Brightness Depth BPM", NumberFieldType, 0, 255, getBrightDepthBpm, nullptr, setBrightDepthBpm},
+    {"brightDepthMin", "Brightness Depth Min", NumberFieldType, 0, 255, getBrightDepthMin, nullptr, setBrightDepthMin},
+    {"brightDepthMax", "Brightness Depth Max", NumberFieldType, 0, 255, getBrightDepthMax, nullptr, setBrightDepthMax},
 
-    {"brightThetaIncBpm", "Bright Theta Inc BPM", NumberFieldType, 0, 255, getBrightThetaIncBpm, NULL, setBrightThetaIncBpm},
-    {"brightThetaIncMin", "Bright Theta Inc Min", NumberFieldType, 0, 255, getBrightThetaIncMin, NULL, setBrightThetaIncMin},
-    {"brightThetaIncMax", "Bright Theta Inc Max", NumberFieldType, 0, 255, getBrightThetaIncMax, NULL, setBrightThetaIncMax},
+    {"brightThetaIncBpm", "Bright Theta Inc BPM", NumberFieldType, 0, 255, getBrightThetaIncBpm, nullptr, setBrightThetaIncBpm},
+    {"brightThetaIncMin", "Bright Theta Inc Min", NumberFieldType, 0, 255, getBrightThetaIncMin, nullptr, setBrightThetaIncMin},
+    {"brightThetaIncMax", "Bright Theta Inc Max", NumberFieldType, 0, 255, getBrightThetaIncMax, nullptr, setBrightThetaIncMax},
 
-    {"msMultiplierBpm", "Time Multiplier BPM", NumberFieldType, 0, 255, getMsMultiplierBpm, NULL, setMsMultiplierBpm},
-    {"msMultiplierMin", "Time Multiplier Min", NumberFieldType, 0, 255, getMsMultiplierMin, NULL, setMsMultiplierMin},
-    {"msMultiplierMax", "Time Multiplier Max", NumberFieldType, 0, 255, getMsMultiplierMax, NULL, setMsMultiplierMax},
+    {"msMultiplierBpm", "Time Multiplier BPM", NumberFieldType, 0, 255, getMsMultiplierBpm, nullptr, setMsMultiplierBpm},
+    {"msMultiplierMin", "Time Multiplier Min", NumberFieldType, 0, 255, getMsMultiplierMin, nullptr, setMsMultiplierMin},
+    {"msMultiplierMax", "Time Multiplier Max", NumberFieldType, 0, 255, getMsMultiplierMax, nullptr, setMsMultiplierMax},
 
-    {"hueIncBpm", "Hue Inc BPM", NumberFieldType, 0, 255, getHueIncBpm, NULL, setHueIncBpm},
-    {"hueIncMin", "Hue Inc Min", NumberFieldType, 0, 255, getHueIncMin, NULL, setHueIncMin},
-    {"hueIncMax", "Hue Inc Max", NumberFieldType, 0, 255, getHueIncMax, NULL, setHueIncMax},
+    {"hueIncBpm", "Hue Inc BPM", NumberFieldType, 0, 255, getHueIncBpm, nullptr, setHueIncBpm},
+    {"hueIncMin", "Hue Inc Min", NumberFieldType, 0, 255, getHueIncMin, nullptr, setHueIncMin},
+    {"hueIncMax", "Hue Inc Max", NumberFieldType, 0, 255, getHueIncMax, nullptr, setHueIncMax},
 
-    {"sHueBpm", "S Hue BPM", NumberFieldType, 0, 255, getSHueBpm, NULL, setSHueBpm},
-    {"sHueMin", "S Hue Min", NumberFieldType, 0, 255, getSHueMin, NULL, setSHueMin},
-    {"sHueMax", "S Hue Max", NumberFieldType, 0, 255, getSHueMax, NULL, setSHueMax},
+    {"sHueBpm", "S Hue BPM", NumberFieldType, 0, 255, getSHueBpm, nullptr, setSHueBpm},
+    {"sHueMin", "S Hue Min", NumberFieldType, 0, 255, getSHueMin, nullptr, setSHueMin},
+    {"sHueMax", "S Hue Max", NumberFieldType, 0, 255, getSHueMax, nullptr, setSHueMax},
 };
 
 uint8_t fieldCount = ARRAY_SIZE(fields);
