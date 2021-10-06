@@ -34,14 +34,7 @@
 
 const bool discovery = false;
 const String serverName = "https://ping.evilgeniuslabs.org"; // address of server to ping
-
-const uint8_t fingerprint[20] {
-  0xAD, 0x1F, 0xCB, 0xD9,
-  0xA0, 0xBC, 0x17, 0xD5,
-  0x5B, 0xF2, 0xE1, 0xBF,
-  0x98, 0xD1, 0x06, 0xCD,
-  0xAC, 0x3F, 0xB8, 0x33
-  }; // server SSL cert fingerprint
+// const uint8_t fingerprint[20] { 0xAD, 0x1F, 0xCB, 0xD9, 0xA0, 0xBC, 0x17, 0xD5, 0x5B, 0xF2, 0xE1, 0xBF, 0x98, 0xD1, 0x06, 0xCD, 0xAC, 0x3F, 0xB8, 0x33 }; // server SSL cert fingerprint
 
 void checkPingTimer() {
   if (!discovery) return;
@@ -55,10 +48,12 @@ void checkPingTimer() {
     // Check WiFi connection status
     if (WiFi.status() == WL_CONNECTED) {
       Serial.println("Connected, ready to ping");
-      WiFiClientSecure client;
-      client.setFingerprint(fingerprint);
-      
+
       HTTPClient http;
+      BearSSL::WiFiClientSecure client;
+
+      //client.setFingerprint(fingerprint);
+      client.setInsecure();
       http.begin(client, serverName);
       http.addHeader("Content-Type", "application/json");
       String deviceName = "\"deviceName\":\"" + nameString;
