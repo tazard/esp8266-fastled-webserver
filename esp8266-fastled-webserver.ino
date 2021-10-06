@@ -282,8 +282,9 @@ void setup() {
   char nameChar[nameString.length() + 1];
   memset(nameChar, 0, nameString.length() + 1);
 
-  for (int i = 0; i < nameString.length(); i++)
+  for (unsigned int i = 0; i < nameString.length(); i++) {
     nameChar[i] = nameString.charAt(i);
+  }
 
   Serial.printf("Name: %s\n", nameChar );
 
@@ -359,9 +360,13 @@ void setup() {
 
   webServer.on("/twinkleSpeed", HTTP_POST, []() {
     String value = webServer.arg("value");
-    twinkleSpeed = value.toInt();
-    if (twinkleSpeed < 0) twinkleSpeed = 0;
-    else if (twinkleSpeed > 8) twinkleSpeed = 8;
+    long tmp = value.toInt();
+    if (tmp < 0) {
+      tmp = 0;
+    } else if (tmp > 8) {
+      tmp = 8;
+    }
+    twinkleSpeed = (uint8_t)tmp;
     writeAndCommitSettings();
     broadcastInt("twinkleSpeed", twinkleSpeed);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
@@ -370,9 +375,13 @@ void setup() {
 
   webServer.on("/twinkleDensity", HTTP_POST, []() {
     String value = webServer.arg("value");
-    twinkleDensity = value.toInt();
-    if (twinkleDensity < 0) twinkleDensity = 0;
-    else if (twinkleDensity > 8) twinkleDensity = 8;
+    long tmp = value.toInt();
+    if (tmp < 0) {
+      tmp = 0;
+    } else if (tmp > 8) {
+      tmp = 8;
+    }
+    twinkleDensity = tmp;
     writeAndCommitSettings();
     broadcastInt("twinkleDensity", twinkleDensity);
     webServer.sendHeader("Access-Control-Allow-Origin", "*");
@@ -381,9 +390,13 @@ void setup() {
 
   webServer.on("/coolLikeIncandescent", HTTP_POST, []() {
     String value = webServer.arg("value");
-    coolLikeIncandescent = value.toInt();
-    if (coolLikeIncandescent < 0) coolLikeIncandescent = 0;
-    else if (coolLikeIncandescent > 1) coolLikeIncandescent = 1;
+    long tmp = value.toInt();
+    if (tmp < 0) {
+      tmp = 0;
+    } else if (tmp > 1) {
+      tmp = 1;
+    }
+    coolLikeIncandescent = tmp;
     writeAndCommitSettings();
     broadcastInt("coolLikeIncandescent", coolLikeIncandescent);
     sendInt(coolLikeIncandescent);
@@ -830,10 +843,9 @@ void readSettings()
   brightness = EEPROM.read(0);
 
   currentPatternIndex = EEPROM.read(1);
-  if (currentPatternIndex < 0)
-    currentPatternIndex = 0;
-  else if (currentPatternIndex >= patternCount)
+  if (currentPatternIndex >= patternCount) {
     currentPatternIndex = patternCount - 1;
+  }
 
   byte r = EEPROM.read(2);
   byte g = EEPROM.read(3);
@@ -853,10 +865,9 @@ void readSettings()
   autoplayDuration = EEPROM.read(7);
 
   currentPaletteIndex = EEPROM.read(8);
-  if (currentPaletteIndex < 0)
-    currentPaletteIndex = 0;
-  else if (currentPaletteIndex >= paletteCount)
+  if (currentPaletteIndex >= paletteCount) {
     currentPaletteIndex = paletteCount - 1;
+  }
 
   twinkleSpeed = EEPROM.read(9);
   twinkleDensity = EEPROM.read(10);
@@ -932,11 +943,10 @@ void adjustPattern(bool up)
   else
     currentPatternIndex--;
 
-  // wrap around at the ends
-  if (currentPatternIndex < 0)
-    currentPatternIndex = patternCount - 1;
-  if (currentPatternIndex >= patternCount)
+  // wrap around at the end
+  if (currentPatternIndex >= patternCount) {
     currentPatternIndex = 0;
+  }
 
   if (autoplay == 0) {
     writeAndCommitSettings();
@@ -1005,10 +1015,6 @@ void adjustBrightness(bool up)
 
 void setBrightness(uint8_t value)
 {
-  if (value > 255)
-    value = 255;
-  else if (value < 0) value = 0;
-
   brightness = value;
 
   FastLED.setBrightness(brightness);
