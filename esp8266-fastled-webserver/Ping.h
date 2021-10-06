@@ -34,11 +34,17 @@
 
 const bool discovery = false;
 const String serverName = "https://ping.evilgeniuslabs.org"; // address of server to ping
-const String fingerPrint = "AD 1F CB D9 A0 BC 17 D5 5B F2 E1 BF 98 D1 06 CD AC 3F B8 33"; // server SSL cert fingerprint
+
+const uint8_t fingerprint[20] {
+  0xAD, 0x1F, 0xCB, 0xD9,
+  0xA0, 0xBC, 0x17, 0xD5,
+  0x5B, 0xF2, 0xE1, 0xBF,
+  0x98, 0xD1, 0x06, 0xCD,
+  0xAC, 0x3F, 0xB8, 0x33
+  }; // server SSL cert fingerprint
 
 void checkPingTimer() {
-  if (!discovery) 
-    return;
+  if (!discovery) return;
   
   const unsigned long pingDelay = 600000; /// 60 * 10 * 1000; // 10 minutes
   static unsigned long lastPingTime = pingDelay;
@@ -49,9 +55,11 @@ void checkPingTimer() {
     // Check WiFi connection status
     if (WiFi.status() == WL_CONNECTED) {
       Serial.println("Connected, ready to ping");
-      HTTPClient http;
+      WiFiClientSecure client;
+      client.setFingerprint(fingerprint);
       
-      http.begin(serverName, fingerPrint);
+      HTTPClient http;
+      http.begin(client, serverName);
       http.addHeader("Content-Type", "application/json");
       String deviceName = "\"deviceName\":\"" + nameString;
       String localIp = WiFi.localIP().toString();
