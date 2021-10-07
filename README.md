@@ -52,11 +52,9 @@ Web App
 
 Patterns are requested by the app from the ESP8266, so as new patterns are added, they're automatically listed in the app.
 
-The web app is stored in SPIFFS (on-board flash memory).
+The web app is stored in a file system in on-board flash memory.   The file system used is LittleFS *(Note: prior versions used SPIFFS)*.
 
 The web app is a single page app that uses [jQuery](https://jquery.com) and [Bootstrap](http://getbootstrap.com).  It has buttons for On/Off, a slider for brightness, a pattern selector, and a color picker (using [jQuery MiniColors](http://labs.abeautifulsite.net/jquery-minicolors)).  Event handlers for the controls are wired up, so you don't have to click a 'Send' button after making changes.  The brightness slider and the color picker use a delayed event handler, to prevent from flooding the ESP8266 web server with too many requests too quickly.
-
-The only drawback to SPIFFS that I've found so far is uploading the files can be extremely slow, requiring several minutes, sometimes regardless of how large the files are.  It can be so slow that I've been just developing the web app and debugging locally on my desktop (with a hard-coded IP for the ESP8266), before uploading to SPIFFS and testing on the ESP8266.
 
 Installing
 -----------
@@ -74,14 +72,14 @@ Here are the board settings I use:
 
 ![image](https://user-images.githubusercontent.com/3598755/135755572-52d4d0db-1dba-4388-a86c-a293e4f13878.png)
 
-The web app needs to be uploaded to the ESP8266's SPIFFS.  You can do this within the Arduino IDE after installing the [Arduino ESP8266FS tool](http://esp8266.github.io/Arduino/versions/2.3.0/doc/filesystem.html#uploading-files-to-file-system).
+The web app needs to be uploaded to the ESP8266's file system.  You can do this within the Arduino IDE after installing the [Arduino ESP8266FS tool](http://esp8266.github.io/Arduino/versions/2.3.0/doc/filesystem.html#uploading-files-to-file-system).
 
 With ESP8266FS installed upload the web app using `ESP8266 Sketch Data Upload` command in the Arduino Tools menu.
 
 Compression
 -----------
 
-The web app files can be gzip compressed before uploading to SPIFFS by running the following command:
+The web app files can be gzip compressed before uploading to the ESP8266's file system by running the following command:
 
 `gzip -r data/`
 
