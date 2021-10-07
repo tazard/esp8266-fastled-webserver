@@ -27,9 +27,9 @@ extern "C" {
 #include "user_interface.h"
 }
 
-#include <FS.h>
-//#include <LittleFS.h>
-#define MYFS SPIFFS
+// #include <FS.h>
+#include <LittleFS.h>
+#define MYFS LittleFS
 
 
 #include <ESP8266WiFi.h>
