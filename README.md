@@ -72,9 +72,10 @@ Here are the board settings I use:
 
 ![image](https://user-images.githubusercontent.com/3598755/135755572-52d4d0db-1dba-4388-a86c-a293e4f13878.png)
 
-The web app needs to be uploaded to the ESP8266's file system.  You can do this within the Arduino IDE after installing the [Arduino ESP8266FS tool](http://esp8266.github.io/Arduino/versions/2.3.0/doc/filesystem.html#uploading-files-to-file-system).
+The web app needs to be uploaded to the ESP8266's file system.
+You can do this within the Arduino IDE after installing the [Arduino ESP8266 LittleFS](https://github.com/earlephilhower/arduino-esp8266littlefs-plugin).
 
-With ESP8266FS installed upload the web app using `ESP8266 Sketch Data Upload` command in the Arduino Tools menu.
+With the upload tool installed, upload the web app using `ESP8266 LittleFS Data Upload` command in the Arduino Tools menu.
 
 Compression
 -----------
