@@ -20,6 +20,10 @@ declare -a filenames=(
 # "images/atom196.png"
 # "favicon.ico"
 
+# TODO -- update to be based on script's own directory
+# TODO -- update to switch to build directory
+pushd ../esp8266-fastled-webserver > /dev/null
+
 for filename in "${filenames[@]}"
 do
   # add --trace-ascii curl.log for logging
@@ -31,3 +35,5 @@ do
 
   rm -f data/$filename.gz
 done
+
+popd > /dev/null
