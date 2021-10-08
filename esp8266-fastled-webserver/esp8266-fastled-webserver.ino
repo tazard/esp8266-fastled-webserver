@@ -27,13 +27,18 @@ extern "C" {
 #include "user_interface.h"
 }
 
+// #include <FS.h>
+#include <LittleFS.h>
+#define MYFS LittleFS
+
+
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include <ESP8266HTTPClient.h>
 //#include <WebSocketsServer.h>
-#include <FS.h>
+
 #include <EEPROM.h>
 //#include <IRremoteESP8266.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager/tree/development
@@ -249,11 +254,12 @@ void setup() {
   Serial.print( F("MAC Address: ") ); Serial.println(WiFi.macAddress());
   Serial.println();
 
-  SPIFFS.begin();
-  {
-    Serial.println("SPIFFS contents:");
+  if (!MYFS.begin()) {
+    Serial.println(F("An error occurred when attempting to mount the flash file system"));
+  } else {
+    Serial.println("FS contents:");
 
-    Dir dir = SPIFFS.openDir("/");
+    Dir dir = MYFS.openDir("/");
     while (dir.next()) {
       String fileName = dir.fileName();
       size_t fileSize = dir.fileSize();
@@ -477,7 +483,7 @@ void setup() {
         webServer.send(200, "text/plain", "");
       }, handleFileUpload);
 
-  webServer.serveStatic("/", SPIFFS, "/", "max-age=86400");
+  webServer.serveStatic("/", MYFS, "/", "max-age=86400");
 
   MDNS.begin(nameChar);
   MDNS.setHostname(nameChar);
