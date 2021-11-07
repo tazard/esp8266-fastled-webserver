@@ -235,6 +235,19 @@ PatternAndNameList patterns = {
   { blackAndWhiteNoise, "Black & White Noise" },
   { blackAndBlueNoise, "Black & Blue Noise" },
 
+  // polar noise patterns
+  { fireNoisePolar, "Fire Polar Noise" },
+  { fireNoise2Polar, "Fire Polar Noise 2" },
+  { lavaNoisePolar, "Lava Polar Noise" },
+  { rainbowNoisePolar, "Rainbow Polar Noise" },
+  { rainbowStripeNoisePolar, "Rainbow Stripe Polar Noise" },
+  { partyNoisePolar, "Party Polar Noise" },
+  { forestNoisePolar, "Forest Polar Noise" },
+  { cloudNoisePolar, "Cloud Polar Noise" },
+  { oceanNoisePolar, "Ocean Polar Noise" },
+  { blackAndWhiteNoisePolar, "Black & White Polar Noise" },
+  { blackAndBlueNoisePolar, "Black & Blue Polar Noise" },
+
   { drawAnalogClock, "Analog Clock" },
 
   { drawSpiralAnalogClock13,  "Spiral Analog Clock 13" },
